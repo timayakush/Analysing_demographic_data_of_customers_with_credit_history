@@ -8,8 +8,16 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-def parser(file_name):
-    data_local = pd.read_csv(file_name)
+def read_from_text_file(file_name):
+    if '.csv' in file_name:
+        data_local = pd.read_csv(file_name)
+    else:
+        data_local = pd.read_excel(file_name)
+    return data_local
+
+
+def read_from_bin_file(file_name):
+    data_local = np.load(file_name)
     return data_local
 
 
@@ -18,10 +26,28 @@ def save_to_excel(data_local):
     data_local.to_excel(path, index=False)
 
 
+def save_to_csv(file_name, data_local):
+    np.savetxt(file_name, data_local, fmt='%s', delimiter=';')
+
+
+def save_to_bin_file(data_local, file_name):
+    np.save(file_name, data_local)
+
+
+def save_graphics(file_name):
+    plt.savefig(file_name)
+
+
 def adding_entities(data_local):
     temp = []
-    for i in range(len(list(data_local))):
-        temp.append(input())
+    columns = list(data_local)
+    for i in range(len(columns)):
+        if columns[i] in int_columns:
+            temp.append(int(input()))
+        elif columns[i] in float_columns:
+            temp.append(float(input()))
+        else:
+            temp.append(input())
     data_local.loc[len(data_local.index)] = temp
     return data_local
 
@@ -51,9 +77,9 @@ def report_generation(data_local):
     """
     num_of_cons = 0
     num_of_col = 0
-    SEL = True
+    sel = True
     report_columns = []
-    while (num_of_cons <= 0 or num_of_cons > 21):
+    while num_of_cons <= 0 or num_of_cons > 21:
         print('Введите количество условий:')
         num_of_cons = int(input())
     for i in range(num_of_cons):
@@ -61,12 +87,12 @@ def report_generation(data_local):
         column = input()
         print('Введите название', i + 1, 'условия:')
         condition = input()
-        if (column in int_columns):
+        if column in int_columns:
             condition = np.int64(condition)
-        if (column in float_columns):
+        if column in float_columns:
             condition = np.float64(condition)
-        SEL = SEL & (data_local[column] == condition)
-    while (num_of_col <= 0 or num_of_col > 21):
+        sel = sel & (data_local[column] == condition)
+    while num_of_col <= 0 or num_of_col > 21:
         print('Введите количество столбцов, которые будут в отчёте:')
         num_of_col = int(input())
     for i in range(num_of_col):
@@ -75,10 +101,10 @@ def report_generation(data_local):
         report_columns.append(column_report)
     print('Введите название отчёта: ')
     report = input()
-    W1 = data_local.loc[SEL, report_columns]
-    PTH1 = "./" + report + ".xlsx"
-    W1.to_excel(PTH1, index=False)
-    return W1
+    w1 = data_local.loc[sel, report_columns]
+    pth1 = "./" + report + ".xlsx"
+    w1.to_excel(pth1, index=False)
+    return w1
 
 
 def statictic_report(data_local, var_list):
@@ -179,7 +205,7 @@ def scatter_chart(data_local, x, y, z):
 
 
 file = 'BankChurners.csv'
-data = parser(file)
+data = read_from_text_file(file)
 qualitative_variables = ['Attrition_Flag', 'Gender', 'Education_Level',
                          'Marital_Status', 'Income_Category', 'Card_Category']
 quantitative_variables = ['Customer_Age', 'Dependent_count', 'Months_on_book',
