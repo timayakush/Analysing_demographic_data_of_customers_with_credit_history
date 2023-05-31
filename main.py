@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Data analysis project v 1.0
+Data analysis project v 1.3
 """
 import numpy as np
 import pandas as pd
@@ -21,8 +21,8 @@ def read_from_bin_file(file_name):
     return data_local
 
 
-def save_to_excel(data_local):
-    path = './output/' + input() + '.xlsx'
+def save_to_excel(data_local, file_name):
+    path = './output/' + file_name + '.xlsx'
     data_local.to_excel(path, index=False)
 
 
@@ -54,6 +54,17 @@ def adding_entities(data_local):
 
 def deleting_entities(data_local, drop_index):
     return data_local.drop(index=drop_index)
+
+
+def manual_modification(data_local, row_num, x):
+    temp = input()
+    if x in int_columns:
+        data_local[x][row_num]= int(temp)
+    elif x in float_columns:
+        data_local[x][row_num] = float(temp)
+    else:
+        data_local[x][row_num] = temp
+    return data_local
 
 
 def report_generation(data_local):
@@ -102,12 +113,11 @@ def report_generation(data_local):
     print('Введите название отчёта: ')
     report = input()
     w1 = data_local.loc[sel, report_columns]
-    pth1 = "./" + report + ".xlsx"
-    w1.to_excel(pth1, index=False)
+    save_to_excel(w1, report)
     return w1
 
 
-def statictic_report(data_local, var_list):
+def statistic_report(data_local, var_list):
     if var_list[0] in quantitative_variables:
         statistics = data_local[var_list].describe()
         return statistics
@@ -204,7 +214,7 @@ def scatter_chart(data_local, x, y, z):
     plt.show()
 
 
-file = 'BankChurners.csv'
+file = 'Analysing_demographic_data_of_customers_with_credit_history/BankChurners.csv'
 data = read_from_text_file(file)
 qualitative_variables = ['Attrition_Flag', 'Gender', 'Education_Level',
                          'Marital_Status', 'Income_Category', 'Card_Category']
