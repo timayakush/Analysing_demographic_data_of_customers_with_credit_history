@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Data analysis project v 1.4
+Data analysis project v 2.0
 """
+import tkinter as tki
+import tkinter.ttk as ttk
+from tkinter import filedialog as fld
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import tkinter as tki
-import tkinter.ttk as ttk
 
 
 def read_from_text_file(file_name):
@@ -35,14 +36,16 @@ def read_from_bin_file(file_name):
     return data_local
 
 
-def save_to_excel(data_local, file_name):
+def save_to_excel(data_local):
     """
     Функция сохраняет базу данных в файл .xlsx
-    Входные данные: датафрейм с базой данных (pd.DataFrame()), имя файла (строка)
+    Входные данные: датафрейм с базой данных (pd.DataFrame())
     Выходные данные: нет
     Автор:
     """
-    path = './output/' + file_name + '.xlsx'
+    ftypes = [('Excel файлы', '*.xlsx')]
+    dlg = fld.SaveAs(filetypes=ftypes)
+    path = dlg.show() + '.xlsx'
     data_local.to_excel(path, index=False)
 
 
@@ -123,54 +126,282 @@ def manual_modification(data_local, row_num, x):
     return data_local
 
 
-def report_generation(data_local):
+def data_filter():
     """
-    Создание отчета на основе базы данных
-
-    Входные параметры:
-    база данных data_local
-
-    Внутри функции происходит ввод следующих переменных:
-    num_of_cons (количество условий)
-    column (название столбца, в котором находится условие)
-    condition (название условия)
-    num_of_col (количество столбцов, которые будут в отчёте)
-    column_report (название столбца, который будет в отчёте)
-    report (название отчёта)
-
-    Возвращает:
-    W1 (новая база данных, содержащая num_of_cons столбцов, отсортированных по условиям)
-    Сохраняет файл с названием, которое задаёт пользователь, в формате .xlsx в папку, где находится программа
+    Фильтрация базы данных по выбранным условиям, сохранение отфильтрованной базы данных
+    Входные данные: нет
+    Выходные данные: нет
+    Автор:
     """
-    num_of_cons = 0
-    num_of_col = 0
-    sel = True
-    report_columns = []
-    while num_of_cons <= 0 or num_of_cons > 21:
-        print('Введите количество условий:')
-        num_of_cons = int(input())
-    for i in range(num_of_cons):
-        print('Введите название столбца, в котором находится', i + 1, 'условие:')
-        column = input()
-        print('Введите название', i + 1, 'условия:')
-        condition = input()
-        if column in int_columns:
-            condition = np.int64(condition)
-        if column in float_columns:
-            condition = np.float64(condition)
-        sel = sel & (data_local[column] == condition)
-    while num_of_col <= 0 or num_of_col > 21:
-        print('Введите количество столбцов, которые будут в отчёте:')
-        num_of_col = int(input())
-    for i in range(num_of_col):
-        print('Введите название', i + 1, 'столбца, который будет в отчёте:')
-        column_report = input()
-        report_columns.append(column_report)
-    print('Введите название отчёта: ')
-    report = input()
-    w1 = data_local.loc[sel, report_columns]
-    save_to_excel(w1, report)
-    return w1
+
+    def checkbutton_changed(i):
+        """
+        Функция добавляет поле для выбора условия фильтрации
+        Входные данные: номер столбца (int)
+        Выходные данные: нет
+        Автор:
+        """
+        if checkbutton_var[i].get() == 1:
+            if columns[i] in string_columns:
+                characteristics = []
+                pd_characteristics = pd.unique(data[columns[i]])
+                for j in range(len(pd_characteristics)):
+                    characteristics.append(pd_characteristics[j])
+                combobox[i] = ttk.Combobox(window, values=characteristics)
+                combobox[i].current(0)
+                combobox[i].grid(row=i, column=1)
+            if columns[i] in int_columns or columns[i] in float_columns:
+                characteristics = pd.unique(data[columns[i]])
+                spinbox[i] = tki.Spinbox(window, from_=min(characteristics), to=max(characteristics))
+                spinbox[i].grid(row=i, column=1)
+
+    def click1():
+        """
+        Функция проверяет, заданы ли условия для фильтрации. Если да, то 
+        выводит список столбцов для выбора тех, которые останутся в
+        отфильтрованной базе данных
+        Входные данные: нет
+        Выходные данные: нет
+        Автор:
+        """
+        flag = 0
+        sel = True
+        for i in range(len(checkbutton)):
+            if checkbutton_var[i].get() == 1:
+                flag = 1
+                if columns[i] in string_columns:
+                    condition = combobox[i].get()
+                elif columns[i] in int_columns:
+                    condition = np.int64(spinbox[i].get())
+                else:
+                    condition = np.float64(spinbox[i].get())
+                sel = sel & (data[columns[i]] == condition)
+        if flag == 0:
+            tki.messagebox.showwarning(title="Предупреждение", message="Не выбраны значения")
+        else:
+            checkbutton_var1.append(tki.IntVar())
+            checkbutton1.append(ttk.Checkbutton(window, text=columns[0], variable=checkbutton_var1[0]))
+            checkbutton1[0].grid(row=0, column=2)
+            checkbutton_var1.append(tki.IntVar())
+            checkbutton1.append(ttk.Checkbutton(window, text=columns[1], variable=checkbutton_var1[1]))
+            checkbutton1[1].grid(row=1, column=2)
+            checkbutton_var1.append(tki.IntVar())
+            checkbutton1.append(ttk.Checkbutton(window, text=columns[2], variable=checkbutton_var1[2]))
+            checkbutton1[2].grid(row=2, column=2)
+            checkbutton_var1.append(tki.IntVar())
+            checkbutton1.append(ttk.Checkbutton(window, text=columns[3], variable=checkbutton_var1[3]))
+            checkbutton1[3].grid(row=3, column=2)
+            checkbutton_var1.append(tki.IntVar())
+            checkbutton1.append(ttk.Checkbutton(window, text=columns[4], variable=checkbutton_var1[4]))
+            checkbutton1[4].grid(row=4, column=2)
+            checkbutton_var1.append(tki.IntVar())
+            checkbutton1.append(ttk.Checkbutton(window, text=columns[5], variable=checkbutton_var1[5]))
+            checkbutton1[5].grid(row=5, column=2)
+            checkbutton_var1.append(tki.IntVar())
+            checkbutton1.append(ttk.Checkbutton(window, text=columns[6], variable=checkbutton_var1[6]))
+            checkbutton1[6].grid(row=6, column=2)
+            checkbutton_var1.append(tki.IntVar())
+            checkbutton1.append(ttk.Checkbutton(window, text=columns[7], variable=checkbutton_var1[7]))
+            checkbutton1[7].grid(row=7, column=2)
+            checkbutton_var1.append(tki.IntVar())
+            checkbutton1.append(ttk.Checkbutton(window, text=columns[8], variable=checkbutton_var1[8]))
+            checkbutton1[8].grid(row=8, column=2)
+            checkbutton_var1.append(tki.IntVar())
+            checkbutton1.append(ttk.Checkbutton(window, text=columns[9], variable=checkbutton_var1[9]))
+            checkbutton1[9].grid(row=9, column=2)
+            checkbutton_var1.append(tki.IntVar())
+            checkbutton1.append(ttk.Checkbutton(window, text=columns[10], variable=checkbutton_var1[10]))
+            checkbutton1[10].grid(row=10, column=2)
+            checkbutton_var1.append(tki.IntVar())
+            checkbutton1.append(ttk.Checkbutton(window, text=columns[11], variable=checkbutton_var1[11]))
+            checkbutton1[11].grid(row=11, column=2)
+            checkbutton_var1.append(tki.IntVar())
+            checkbutton1.append(ttk.Checkbutton(window, text=columns[12], variable=checkbutton_var1[12]))
+            checkbutton1[12].grid(row=12, column=2)
+            checkbutton_var1.append(tki.IntVar())
+            checkbutton1.append(ttk.Checkbutton(window, text=columns[13], variable=checkbutton_var1[13]))
+            checkbutton1[13].grid(row=13, column=2)
+            checkbutton_var1.append(tki.IntVar())
+            checkbutton1.append(ttk.Checkbutton(window, text=columns[14], variable=checkbutton_var1[14]))
+            checkbutton1[14].grid(row=14, column=2)
+            checkbutton_var1.append(tki.IntVar())
+            checkbutton1.append(ttk.Checkbutton(window, text=columns[15], variable=checkbutton_var1[15]))
+            checkbutton1[15].grid(row=15, column=2)
+            checkbutton_var1.append(tki.IntVar())
+            checkbutton1.append(ttk.Checkbutton(window, text=columns[16], variable=checkbutton_var1[16]))
+            checkbutton1[16].grid(row=16, column=2)
+            checkbutton_var1.append(tki.IntVar())
+            checkbutton1.append(ttk.Checkbutton(window, text=columns[17], variable=checkbutton_var1[17]))
+            checkbutton1[17].grid(row=17, column=2)
+            checkbutton_var1.append(tki.IntVar())
+            checkbutton1.append(ttk.Checkbutton(window, text=columns[18], variable=checkbutton_var1[18]))
+            checkbutton1[18].grid(row=18, column=2)
+            checkbutton_var1.append(tki.IntVar())
+            checkbutton1.append(ttk.Checkbutton(window, text=columns[19], variable=checkbutton_var1[19]))
+            checkbutton1[19].grid(row=19, column=2)
+            checkbutton_var1.append(tki.IntVar())
+            checkbutton1.append(ttk.Checkbutton(window, text=columns[20], variable=checkbutton_var1[20]))
+            checkbutton1[20].grid(row=20, column=2)
+            checkbutton_var1.append(tki.IntVar())
+            checkbutton1.append(
+                ttk.Checkbutton(window, text="Naive_Bayes_Classifier_mon1", variable=checkbutton_var1[21]))
+            checkbutton1[21].grid(row=21, column=2)
+            checkbutton_var1.append(tki.IntVar())
+            checkbutton1.append(
+                ttk.Checkbutton(window, text="Naive_Bayes_Classifier_mon2", variable=checkbutton_var1[22]))
+            checkbutton1[22].grid(row=22, column=2)
+            btn2 = ttk.Button(window, text="Отфильтровать", command=lambda: click2(sel))
+            btn2.grid(row=24, column=1)
+
+    def click2(SEL):
+        """
+        Функция проверяет, заданы ли условия для фильтрации. Если да, то 
+        выводит список столбцов для выбора тех, которые останутся в
+        отфильтрованной базе данных
+        Входные данные: условие фильтрации(pd.Series())
+        Выходные данные: нет
+        Автор:
+        """
+        flag = 0
+        report_columns = []
+        for i in range(len(checkbutton1)):
+            if checkbutton_var1[i].get() == 1:
+                flag = 1
+                report_columns.append(columns[i])
+        if flag == 1:
+            data_filter = data.loc[SEL, report_columns]
+            if data_filter.empty:
+                tki.messagebox.showinfo(title="Информация",
+                                        message="Выбранным параметрам не соответствует ни одна строка")
+            else:
+                window1 = tki.Toplevel()
+                window1.title("Отфильтрованная база данных")
+                window1.geometry('600x250')
+                menu1 = tki.Menu(window1)
+                menu1.add_command(label="Сохранить", command=lambda: save_to_excel(data_filter))
+                window1.config(menu=menu1)
+                tree1 = ttk.Treeview(window1, columns=report_columns, show="headings")
+                for i in range(len(report_columns)):
+                    tree1.heading(report_columns[i], text=report_columns[i])
+                for i in range(len(data_filter)):
+                    values = []
+                    for j in range(len(report_columns)):
+                        values.append(data_filter.iloc[i, j])
+                    tree1.insert("", tki.END, values=values)
+                scrollbar11 = ttk.Scrollbar(window1, orient="horizontal", command=tree1.xview)
+                scrollbar11.pack(fill="x", side="bottom")
+                tree1["xscrollcommand"] = scrollbar11.set
+                scrollbar21 = ttk.Scrollbar(window1, orient="vertical", command=tree1.yview, )
+                scrollbar21.pack(side="right", fill="y")
+                tree1["yscrollcommand"] = scrollbar21.set
+                tree1.pack(fill="both", expand=1)
+        else:
+            tki.messagebox.showwarning(title="Предупреждение", message="Не выбраны значения")
+
+    window = tki.Toplevel()
+    window.title("Фильтр")
+    window.geometry("500x550")
+    window.resizable(False, False)
+    checkbutton_var = []
+    checkbutton = []
+    checkbutton_var1 = []
+    checkbutton1 = []
+    spinbox = 23 * [0]
+    combobox = 23 * [0]
+    checkbutton_var.append(tki.IntVar())
+    checkbutton.append(
+        ttk.Checkbutton(window, text=columns[0], variable=checkbutton_var[0], command=lambda: checkbutton_changed(0)))
+    checkbutton[0].grid(row=0, column=0)
+    checkbutton_var.append(tki.IntVar())
+    checkbutton.append(
+        ttk.Checkbutton(window, text=columns[1], variable=checkbutton_var[1], command=lambda: checkbutton_changed(1)))
+    checkbutton[1].grid(row=1, column=0)
+    checkbutton_var.append(tki.IntVar())
+    checkbutton.append(
+        ttk.Checkbutton(window, text=columns[2], variable=checkbutton_var[2], command=lambda: checkbutton_changed(2)))
+    checkbutton[2].grid(row=2, column=0)
+    checkbutton_var.append(tki.IntVar())
+    checkbutton.append(
+        ttk.Checkbutton(window, text=columns[3], variable=checkbutton_var[3], command=lambda: checkbutton_changed(3)))
+    checkbutton[3].grid(row=3, column=0)
+    checkbutton_var.append(tki.IntVar())
+    checkbutton.append(
+        ttk.Checkbutton(window, text=columns[4], variable=checkbutton_var[4], command=lambda: checkbutton_changed(4)))
+    checkbutton[4].grid(row=4, column=0)
+    checkbutton_var.append(tki.IntVar())
+    checkbutton.append(
+        ttk.Checkbutton(window, text=columns[5], variable=checkbutton_var[5], command=lambda: checkbutton_changed(5)))
+    checkbutton[5].grid(row=5, column=0)
+    checkbutton_var.append(tki.IntVar())
+    checkbutton.append(
+        ttk.Checkbutton(window, text=columns[6], variable=checkbutton_var[6], command=lambda: checkbutton_changed(6)))
+    checkbutton[6].grid(row=6, column=0)
+    checkbutton_var.append(tki.IntVar())
+    checkbutton.append(
+        ttk.Checkbutton(window, text=columns[7], variable=checkbutton_var[7], command=lambda: checkbutton_changed(7)))
+    checkbutton[7].grid(row=7, column=0)
+    checkbutton_var.append(tki.IntVar())
+    checkbutton.append(
+        ttk.Checkbutton(window, text=columns[8], variable=checkbutton_var[8], command=lambda: checkbutton_changed(8)))
+    checkbutton[8].grid(row=8, column=0)
+    checkbutton_var.append(tki.IntVar())
+    checkbutton.append(
+        ttk.Checkbutton(window, text=columns[9], variable=checkbutton_var[9], command=lambda: checkbutton_changed(9)))
+    checkbutton[9].grid(row=9, column=0)
+    checkbutton_var.append(tki.IntVar())
+    checkbutton.append(ttk.Checkbutton(window, text=columns[10], variable=checkbutton_var[10],
+                                       command=lambda: checkbutton_changed(10)))
+    checkbutton[10].grid(row=10, column=0)
+    checkbutton_var.append(tki.IntVar())
+    checkbutton.append(ttk.Checkbutton(window, text=columns[11], variable=checkbutton_var[11],
+                                       command=lambda: checkbutton_changed(11)))
+    checkbutton[11].grid(row=11, column=0)
+    checkbutton_var.append(tki.IntVar())
+    checkbutton.append(ttk.Checkbutton(window, text=columns[12], variable=checkbutton_var[12],
+                                       command=lambda: checkbutton_changed(12)))
+    checkbutton[12].grid(row=12, column=0)
+    checkbutton_var.append(tki.IntVar())
+    checkbutton.append(ttk.Checkbutton(window, text=columns[13], variable=checkbutton_var[13],
+                                       command=lambda: checkbutton_changed(13)))
+    checkbutton[13].grid(row=13, column=0)
+    checkbutton_var.append(tki.IntVar())
+    checkbutton.append(ttk.Checkbutton(window, text=columns[14], variable=checkbutton_var[14],
+                                       command=lambda: checkbutton_changed(14)))
+    checkbutton[14].grid(row=14, column=0)
+    checkbutton_var.append(tki.IntVar())
+    checkbutton.append(ttk.Checkbutton(window, text=columns[15], variable=checkbutton_var[15],
+                                       command=lambda: checkbutton_changed(15)))
+    checkbutton[15].grid(row=15, column=0)
+    checkbutton_var.append(tki.IntVar())
+    checkbutton.append(ttk.Checkbutton(window, text=columns[16], variable=checkbutton_var[16],
+                                       command=lambda: checkbutton_changed(16)))
+    checkbutton[16].grid(row=16, column=0)
+    checkbutton_var.append(tki.IntVar())
+    checkbutton.append(ttk.Checkbutton(window, text=columns[17], variable=checkbutton_var[17],
+                                       command=lambda: checkbutton_changed(17)))
+    checkbutton[17].grid(row=17, column=0)
+    checkbutton_var.append(tki.IntVar())
+    checkbutton.append(ttk.Checkbutton(window, text=columns[18], variable=checkbutton_var[18],
+                                       command=lambda: checkbutton_changed(18)))
+    checkbutton[18].grid(row=18, column=0)
+    checkbutton_var.append(tki.IntVar())
+    checkbutton.append(ttk.Checkbutton(window, text=columns[19], variable=checkbutton_var[19],
+                                       command=lambda: checkbutton_changed(19)))
+    checkbutton[19].grid(row=19, column=0)
+    checkbutton_var.append(tki.IntVar())
+    checkbutton.append(ttk.Checkbutton(window, text=columns[20], variable=checkbutton_var[20],
+                                       command=lambda: checkbutton_changed(20)))
+    checkbutton[20].grid(row=20, column=0)
+    checkbutton_var.append(tki.IntVar())
+    checkbutton.append(ttk.Checkbutton(window, text="Naive_Bayes_Classifier_mon1", variable=checkbutton_var[21],
+                                       command=lambda: checkbutton_changed(21)))
+    checkbutton[21].grid(row=21, column=0)
+    checkbutton_var.append(tki.IntVar())
+    checkbutton.append(ttk.Checkbutton(window, text="Naive_Bayes_Classifier_mon2", variable=checkbutton_var[22],
+                                       command=lambda: checkbutton_changed(22)))
+    checkbutton[22].grid(row=22, column=0, sticky="nswe")
+    btn1 = ttk.Button(window, text="Закончить выбор", command=click1)
+    btn1.grid(row=23, column=1)
 
 
 def statistic_report(data_local, var_list):
@@ -275,6 +506,39 @@ def scatter_chart(data_local, x, y, z):
     plt.show()
 
 
+def interface():
+    """
+    Интерфейс программы
+    Входные данные: нет
+    Выходные данные: нет
+    Автор:
+    """
+    root = tki.Tk()
+    root.title('Приложение для анализа данных кредитных историй заёмщиков')
+    root.geometry('600x250')
+    root.minsize(300, 200)
+    menu = tki.Menu(root)
+    menu.add_command(label="Файл")
+    menu.add_command(label="Отчёт", command=data_filter)
+    root.config(menu=menu)
+    tree = ttk.Treeview(columns=columns, show="headings", height=500)
+    for i in range(len(columns)):
+        tree.heading(columns[i], text=columns[i])
+    for i in range(len(data)):
+        values = []
+        for j in range(len(columns)):
+            values.append(data.iloc[i, j])
+        tree.insert("", tki.END, values=values)
+    scrollbar1 = ttk.Scrollbar(orient="horizontal", command=tree.xview)
+    scrollbar1.pack(fill="x", side="bottom")
+    tree["xscrollcommand"] = scrollbar1.set
+    scrollbar2 = ttk.Scrollbar(orient="vertical", command=tree.yview, )
+    scrollbar2.pack(side="right", fill="y")
+    tree["yscrollcommand"] = scrollbar2.set
+    tree.pack()
+    root.mainloop()
+
+
 file = 'Analysing_demographic_data_of_customers_with_credit_history/BankChurners.csv'
 data = read_from_text_file(file)
 qualitative_variables = ['Attrition_Flag', 'Gender', 'Education_Level',
@@ -286,14 +550,17 @@ quantitative_variables = ['Customer_Age', 'Dependent_count', 'Months_on_book',
                           'Total_Amt_Chng_Q4_Q1', 'Total_Trans_Amt',
                           'Total_Trans_Ct', 'Total_Ct_Chng_Q4_Q1',
                           'Avg_Utilization_Ratio']
-columns = data.columns
+data_columns = data.columns
+columns = []
 int_columns = []
 string_columns = []
 float_columns = []
-for i in range(len(columns)):
+for i in range(len(data_columns)):
+    columns.append(data_columns[i])
     if isinstance(data.iloc[1, i], str):
-        string_columns.append(columns[i])
+        string_columns.append(data_columns[i])
     elif isinstance(data.iloc[1, i], np.float64):
-        float_columns.append(columns[i])
+        float_columns.append(data_columns[i])
     else:
-        int_columns.append(columns[i])
+        int_columns.append(data_columns[i])
+interface()
