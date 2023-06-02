@@ -1,14 +1,22 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Data analysis project v 1.3
+Data analysis project v 1.4
 """
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import tkinter as tki
+import tkinter.ttk as ttk
 
 
 def read_from_text_file(file_name):
+    """
+    Функция читает базу данных из файла формата .csv или .xlsx
+    Входные данные: имя файла (строка)
+    Выходные данные: датафрейм с базой данных (pd.DataFrame())
+    Автор:
+    """
     if '.csv' in file_name:
         data_local = pd.read_csv(file_name)
     else:
@@ -17,28 +25,64 @@ def read_from_text_file(file_name):
 
 
 def read_from_bin_file(file_name):
+    """
+    Функция читает базу данных из двоичного файла
+    Входные данные: имя файла
+    Выходные данные: базa данных (массив, кортеж, словарь и т. д.)
+    Автор:
+    """
     data_local = np.load(file_name)
     return data_local
 
 
 def save_to_excel(data_local, file_name):
+    """
+    Функция сохраняет базу данных в файл .xlsx
+    Входные данные: датафрейм с базой данных (pd.DataFrame()), имя файла (строка)
+    Выходные данные: нет
+    Автор:
+    """
     path = './output/' + file_name + '.xlsx'
     data_local.to_excel(path, index=False)
 
 
 def save_to_csv(file_name, data_local):
+    """
+    Функция сохраняет базу данных в файл .csv
+    Входные данные: имя файла (строка), датафрейм с базой данных (pd.DataFrame())
+    Выходные данные: нет
+    Автор:
+    """
     np.savetxt(file_name, data_local, fmt='%s', delimiter=';')
 
 
 def save_to_bin_file(data_local, file_name):
+    """
+    Функция сохраняет базу данных в бинарный файл
+    Входные данные: датафрейм с базой данных (pd.DataFrame()), имя файла (строка)
+    Выходные данные: нет
+    Автор:
+    """
     np.save(file_name, data_local)
 
 
 def save_graphics(file_name):
+    """
+    Фукнция сохраняет построенный график в файл .png
+    Входные данные: имя файла (строка)
+    Выходные данные: нет
+    Автор:
+    """
     plt.savefig(file_name)
 
 
 def adding_entities(data_local):
+    """
+    Функция добавляет строку со значениями, введёнными пользователем, в базу данных
+    Входные данные: исходная база данных (pd.DataFrame())
+    Выходные данные: новая база данных (pd.DataFrame())
+    Автор:
+    """
     temp = []
     columns = list(data_local)
     for i in range(len(columns)):
@@ -53,13 +97,25 @@ def adding_entities(data_local):
 
 
 def deleting_entities(data_local, drop_index):
+    """
+    Функция удаляет выбранную пользователем строку из базы данных
+    Входные данные: исходная база данных (pd.DataFrame()), номер удаляемой строки (целое число)
+    Выходные данные: новая база данных (pd.DataFrame())
+    Автор:
+    """
     return data_local.drop(index=drop_index)
 
 
 def manual_modification(data_local, row_num, x):
+    """
+    Функция осуществляет ручную модификацию выбранного значения в базе данных
+    Входные данные: исходная база данных (pd.DataFrame()), номер строки (целое число), название столбца (строка)
+    Выходные данные: новая база данных (pd.DataFrame())
+    Автор:
+    """
     temp = input()
     if x in int_columns:
-        data_local[x][row_num]= int(temp)
+        data_local[x][row_num] = int(temp)
     elif x in float_columns:
         data_local[x][row_num] = float(temp)
     else:
@@ -118,6 +174,12 @@ def report_generation(data_local):
 
 
 def statistic_report(data_local, var_list):
+    """
+    Статистический отчёт по выбранным количественным или качественным переменным
+    Входные данные: база данных (pd.DataFrame()), список переменных (массив, кортеж, датафрейм и т. д.)
+    Выходные данные: статистический отчёт (pd.DataFrame())
+    Автор:
+    """
     if var_list[0] in quantitative_variables:
         statistics = data_local[var_list].describe()
         return statistics
@@ -131,8 +193,12 @@ def statistic_report(data_local, var_list):
 
 def pivot_table(data_local, x, y, z, v, func):
     """
-    input: x, y, z - qualitative; v - quantitative
-    possible aggfunc values = 'count', 'mean'
+    Создание сводной таблицы по паре выбранных качественных перменных
+    Входные данные: база данных (pd.DataFrame()), первая качественная переменная (строка), вторая качественна переменная
+    (строка), качественная переменная для агрегации (строка), количественная переменная для агрегации (строка), метод
+    агрегации (строка)
+    Выходные данные: сводная таблица (pd.DataFrame())
+    Автор:
     """
     return pd.pivot_table(data_local, index=[x, y], columns=z, values=v,
                           aggfunc=func)
@@ -140,13 +206,11 @@ def pivot_table(data_local, x, y, z, v, func):
 
 def clustered_bar_chart(data_local, x_local, y):
     """
-    Creates a clustered bar chart based on a user-entered metric and side
-    condition
-
-    input: dataframe (dataframe), metric (string), condition (list/numpy array/
-                                                              dataframe/tuple)
-
-    author: Timofey Yaksuhev
+    Создание кластеризованной столбчатой диаграммы для пары качественных переменных
+    Входные данные: база данных (pd.DataFrame()), первая качественная переменная (строка), вторая качественная
+    переменная и её значение (массив, кортеж, словарь и т. д.)
+    Выходные данные: нет
+    Автор:
     """
     x_list = pd.unique(data_local[x_local])
     y_list = [sum(data_local[data_local[y[0]] == y[1]]
@@ -159,13 +223,11 @@ def clustered_bar_chart(data_local, x_local, y):
 
 def categorized_bar_chart(data_local, x, y):
     """
-    Creates a categorized bar chart based on a user-entered metric and side
-    condition
-
-    input: dataframe (pd), metric (string), condition (list/numpy array/
-                                                       dataframe/tuple)
-
-    author: Timofey Yaksuhev
+    Создание категоризированной гистограммы для пары 'количественная - качественная' переменных
+    Входные данные: база данных (pd.DataFrame()), количественная переменная (строка), качественная переменная и её
+    значение (массив, кортеж, словарь и т. д.)
+    Выходные данные: нет
+    Автор:
     """
     column_size = len(data_local[data_local[y[0]] == y[1]][x])
     s_dev = np.std(data_local[data_local[y[0]] == y[1]][x])
@@ -188,23 +250,22 @@ def categorized_bar_chart(data_local, x, y):
 
 def box_and_whiskers_chart(data_local, x, y):
     """
-    Creates a box-and-whiskers chart based on a user-entered metrics and group factor
-
-    input: dataframe (pd), metric (string), group factor (string)
-
-    author: Polina Tatarinova
+    Создание категоризированной диаграммы Бокса-Вискера для пары 'количественная - качественная' переменных
+    Входные данные: база данных (pd.DataFrame()), количественная переменная (строка), качественная переменная и её
+    значение (массив, кортеж, словарь и т. д.)
+    Выходные данные: нет
+    Автор:
     """
     data_local.boxplot(x, by=y, vert=False)
 
 
 def scatter_chart(data_local, x, y, z):
     """
-    Creates a scatter chart based on two user-entered metrics and side condition
-
-    input: dataframe (pd), metric_1 (string), metric_2 (string), condition
-    (list/numpy array/dataframe/tuple)
-
-    author: Polina Tatarinova
+    Создание категоризированной диаграммы рассеивания для пары количественных переменных и одной качественной переменной
+    Входные данные: база данных (pd.DataFrame()), первая количественная переменная (строка), вторая количественная
+    переменная (строка), качественная переменная и её значение (массив, кортеж, словарь и т. д.)
+    Выходные данные: нет
+    Автор:
     """
     x_list = data_local[data_local[z[0]] == z[1]][x]
     y_list = data_local[data_local[z[0]] == z[1]][y]
