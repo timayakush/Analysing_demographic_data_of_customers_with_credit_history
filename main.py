@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Data analysis project v 2.0
+Data analysis project v 2.1
 """
 import tkinter as tki
 import tkinter.ttk as ttk
@@ -79,51 +79,240 @@ def save_graphics(file_name):
     plt.savefig(file_name)
 
 
-def adding_entities(data_local):
+def plug(i):
+    """
+    Фукнция-"заглушка", чтобы при нажатии на строки treeview не срабатывали
+    другие функции
+    Входные данные: нет
+    Выходные данные: нет
+    Автор:
+    """
+    return i
+
+
+def adding_entities(tree):
     """
     Функция добавляет строку со значениями, введёнными пользователем, в базу данных
-    Входные данные: исходная база данных (pd.DataFrame())
-    Выходные данные: новая база данных (pd.DataFrame())
+    и таблицу treeview
+    Входные данные: таблица (ttk.Treeview)
+    Выходные данные: нет
     Автор:
     """
-    temp = []
-    columns = list(data_local)
+
+    def add_click():
+        """
+        Функция срабатывает при нажатии на кнопку подтверждения выбора значений
+        для новой строки. Добавляет в базу данных новую строку с этими значениями,
+        добавляет эту строку в Treeview
+        Входные данные: нет
+        Выходные данные: нет
+        Автор:
+        """
+        entities = []
+        for i in range(len(columns)):
+            if columns[i] in string_columns:
+                entities.append(combobox[i].get())
+            elif columns[i] in int_columns:
+                entities.append(np.int64(spinbox[i].get()))
+            else:
+                entities.append(np.float64(spinbox[i].get()))
+        data.loc[len(data.index)] = entities
+        add_window.grab_release()
+        add_window.destroy()
+        tree.insert("", tki.END, values=entities, iid=len(data))
+
+    add_window = tki.Toplevel()
+    add_window.title("Добавление строки")
+    add_window.geometry("350x525")
+    add_window.resizable(False, False)
+    combobox = 23 * [0]
+    spinbox = 23 * [0]
+    for i in range(len(columns) - 2):
+        add_label = tki.Label(add_window, text=columns[i])
+        add_label.grid(row=i, column=0)
+    add_label = tki.Label(add_window, text="Naive_Bayes_Classifier_mon1")
+    add_label.grid(row=21, column=0)
+    add_label = tki.Label(add_window, text="Naive_Bayes_Classifier_mon2")
+    add_label.grid(row=22, column=0)
     for i in range(len(columns)):
-        if columns[i] in int_columns:
-            temp.append(int(input()))
-        elif columns[i] in float_columns:
-            temp.append(float(input()))
+        if columns[i] in string_columns:
+            characteristics = []
+            pd_characteristics = pd.unique(data[columns[i]])
+            for j in range(len(pd_characteristics)):
+                characteristics.append(pd_characteristics[j])
+            combobox[i] = ttk.Combobox(add_window, values=characteristics)
+            combobox[i].current(0)
+            combobox[i].grid(row=i, column=1)
+        if columns[i] in int_columns or columns[i] in float_columns:
+            characteristics = pd.unique(data[columns[i]])
+            spinbox[i] = tki.Spinbox(add_window, from_=min(characteristics),
+                                     to=max(characteristics))
+            spinbox[i].grid(row=i, column=1)
+    add_button = tki.Button(add_window, text="Добавить", command=add_click)
+    add_button.grid(row=23, column=1, sticky="we")
+
+
+def deleting_entities(tree):
+    """
+    Функция удаляет выбранную пользователем строку из базы данных и из таблицы 
+    Treeview
+    Входные данные: таблица(ttk.Treeview)
+    Выходные данные: нет
+    Автор:
+    """
+
+    def del_select(event):
+        """
+        Функция срабатывает при нажатии на строку Treeview. Вызывает окно 
+        подтверждения удаления выбранной строки
+        Входные данные: нет
+        Выходные данные: нет
+        Автор:
+        """
+        if not tree.selection():
+            return
+        check_window = tki.Toplevel()
+        check_window.title("Подтверждение")
+        check_window.geometry('200x100')
+        check_window.resizable(False, False)
+        label = ttk.Label(check_window, text="Удалить выделенную строку?")
+        label.pack(anchor="c")
+        button_yes = ttk.Button(check_window, text="Да", command=lambda: click_yes(check_window))
+        button_yes.pack(side="left", padx=5)
+        button_no = ttk.Button(check_window, text="Нет", command=lambda: click_no(check_window))
+        button_no.pack(side="right", padx=5)
+
+    def click_yes(check_window):
+        """
+        Функция срабатывает при нажатии на кнопку подтверждения удаления. 
+        Удаляет выбранную пользователем строку из базы данных и из таблицы 
+        Treeview
+        Входные данные: окно подтверждения(tki.Toplevel)
+        Выходные данные: нет
+        Автор:
+        """
+        drop_index = int(tree.selection()[0])
+        check_window.grab_release()
+        check_window.destroy()
+        global data
+        data.drop(index=drop_index, inplace=True)
+        data = data.reset_index(drop=True)
+        print(data)
+        tree.delete(*tree.get_children())
+        for i in range(len(data)):
+            values = []
+            for j in range(len(columns)):
+                values.append(data.iloc[i, j])
+            tree.insert("", tki.END, values=values, iid=i)
+        tree.bind('<<TreeviewSelect>>', plug)
+
+    def click_no(check_window):
+        """
+        Функция срабатывает при нажатии на кнопку отмены удаления. Закрывает 
+        окно подтверждения
+        Входные данные: окно подтверждения(tki.Toplevel)
+        Выходные данные: нет
+        Автор:
+        """
+        check_window.grab_release()
+        check_window.destroy()
+        tree.bind('<<TreeviewSelect>>', plug)
+
+    tki.messagebox.showinfo(title="Информация", message="Выберите строку для удаления")
+    tree.bind('<<TreeviewSelect>>', del_select)
+
+
+def manual_modification(tree):
+    """
+    Функция осуществляет модификацию выбранной ячейки в базе данных и таблице
+    Treeview
+    Входные данные: таблица(ttk.Treeview)
+    Выходные данные: нет
+    Автор:
+    """
+
+    def edit_select(event):
+        """
+        Функция срабатывает при нажатии на строку Treeview. Вызывает окно 
+        редактирования выбранной строки
+        Входные данные: нет
+        Выходные данные: нет
+        Автор:
+        """
+        if not tree.selection():
+            return
+        row_num = int(tree.selection()[0])
+        edit_window = tki.Toplevel()
+        edit_window.title("Редактирование")
+        edit_window.geometry('350x100')
+        edit_window.resizable(False, False)
+        edit_combobox = ttk.Combobox(edit_window, values=columns)
+        edit_combobox.current(0)
+        edit_combobox.grid(column=0, row=0, padx=10, pady=10)
+        edit_button1 = ttk.Button(edit_window, text="Выбрать столбец", command=lambda: edit_click1(edit_combobox.get(),
+                                                                                                   edit_window,
+                                                                                                   row_num))
+        edit_button1.grid(column=0, row=1, padx=10, sticky="we")
+
+    def edit_click1(edit_column, edit_window, row_num):
+        """
+        Функция срабатывает при нажатии на кнопку подтверждения выбора столбца,
+        в котором нужно отредактировать ячейку. Вызывает поле для ввода нового
+        значения ячейки
+        Входные данные: выбранный столбец(str), окно редактирования(tki.Toplevel),
+        номер строки, в которой происходит редактирование(int)
+        Выходные данные: нет
+        Автор:
+        """
+        if edit_column in string_columns:
+            characteristics = []
+            pd_characteristics = pd.unique(data[edit_column])
+            for i in range(len(pd_characteristics)):
+                characteristics.append(pd_characteristics[i])
+            value = ttk.Combobox(edit_window, values=characteristics)
+            value.current(0)
+            value.grid(column=1, row=0, padx=10, pady=10)
         else:
-            temp.append(input())
-    data_local.loc[len(data_local.index)] = temp
-    return data_local
+            characteristics = pd.unique(data[edit_column])
+            value = tki.Spinbox(edit_window, from_=min(characteristics),
+                                to=max(characteristics))
+            value.grid(column=1, row=0, padx=10, pady=10)
+        edit_button2 = ttk.Button(edit_window, text="Редактировать",
+                                  command=lambda: edit_click2(value.get(), edit_column, row_num, edit_window))
+        edit_button2.grid(column=1, row=1, padx=10, sticky="we")
 
+    def edit_click2(value, edit_column, row_num, edit_window):
+        """
+        Функция срабатывает при нажатии на кнопку подтверждения редактирования 
+        после введения нового значения ячейки. Осуществляет модификацию 
+        выбранной ячейки в базе данных и таблице Treeview
+        Входные данные: новое значение ячейкит(str), выбранный столбец(str), 
+        номер строки, в которой происходит редактирование(int),окно 
+        редактирования(tki.Toplevel)
+        Выходные данные: нет
+        Автор:
+        """
+        if edit_column in string_columns:
+            new_value = value
+        elif edit_column in int_columns:
+            new_value = np.int64(value)
+        else:
+            new_value = np.float64(value)
+        pd.options.mode.chained_assignment = None
+        data[edit_column][row_num] = new_value
+        print(data)
+        edit_window.grab_release()
+        edit_window.destroy()
+        tree.delete(*tree.get_children())
+        for i in range(len(data)):
+            values = []
+            for j in range(len(columns)):
+                values.append(data.iloc[i, j])
+            tree.insert("", tki.END, values=values, iid=i)
+        tree.bind('<<TreeviewSelect>>', plug)
 
-def deleting_entities(data_local, drop_index):
-    """
-    Функция удаляет выбранную пользователем строку из базы данных
-    Входные данные: исходная база данных (pd.DataFrame()), номер удаляемой строки (целое число)
-    Выходные данные: новая база данных (pd.DataFrame())
-    Автор:
-    """
-    return data_local.drop(index=drop_index)
-
-
-def manual_modification(data_local, row_num, x):
-    """
-    Функция осуществляет ручную модификацию выбранного значения в базе данных
-    Входные данные: исходная база данных (pd.DataFrame()), номер строки (целое число), название столбца (строка)
-    Выходные данные: новая база данных (pd.DataFrame())
-    Автор:
-    """
-    temp = input()
-    if x in int_columns:
-        data_local[x][row_num] = int(temp)
-    elif x in float_columns:
-        data_local[x][row_num] = float(temp)
-    else:
-        data_local[x][row_num] = temp
-    return data_local
+    tki.messagebox.showinfo(title="Информация", message="Выберите строку для редактирования")
+    tree.bind('<<TreeviewSelect>>', edit_select)
 
 
 def data_filter():
@@ -152,7 +341,8 @@ def data_filter():
                 combobox[i].grid(row=i, column=1)
             if columns[i] in int_columns or columns[i] in float_columns:
                 characteristics = pd.unique(data[columns[i]])
-                spinbox[i] = tki.Spinbox(window, from_=min(characteristics), to=max(characteristics))
+                spinbox[i] = tki.Spinbox(window, from_=min(characteristics),
+                                         to=max(characteristics))
                 spinbox[i].grid(row=i, column=1)
 
     def click1():
@@ -165,7 +355,7 @@ def data_filter():
         Автор:
         """
         flag = 0
-        sel = True
+        SEL = True
         for i in range(len(checkbutton)):
             if checkbutton_var[i].get() == 1:
                 flag = 1
@@ -175,9 +365,10 @@ def data_filter():
                     condition = np.int64(spinbox[i].get())
                 else:
                     condition = np.float64(spinbox[i].get())
-                sel = sel & (data[columns[i]] == condition)
+                SEL = SEL & (data[columns[i]] == condition)
         if flag == 0:
-            tki.messagebox.showwarning(title="Предупреждение", message="Не выбраны значения")
+            tki.messagebox.showwarning(title="Предупреждение",
+                                       message="Не выбраны значения")
         else:
             checkbutton_var1.append(tki.IntVar())
             checkbutton1.append(ttk.Checkbutton(window, text=columns[0], variable=checkbutton_var1[0]))
@@ -250,7 +441,7 @@ def data_filter():
             checkbutton1.append(
                 ttk.Checkbutton(window, text="Naive_Bayes_Classifier_mon2", variable=checkbutton_var1[22]))
             checkbutton1[22].grid(row=22, column=2)
-            btn2 = ttk.Button(window, text="Отфильтровать", command=lambda: click2(sel))
+            btn2 = ttk.Button(window, text="Отфильтровать", command=lambda: click2(SEL))
             btn2.grid(row=24, column=1)
 
     def click2(SEL):
@@ -273,7 +464,11 @@ def data_filter():
             if data_filter.empty:
                 tki.messagebox.showinfo(title="Информация",
                                         message="Выбранным параметрам не соответствует ни одна строка")
+                window.grab_release()
+                window.destroy()
             else:
+                window.grab_release()
+                window.destroy()
                 window1 = tki.Toplevel()
                 window1.title("Отфильтрованная база данных")
                 window1.geometry('600x250')
@@ -518,8 +713,18 @@ def interface():
     root.geometry('600x250')
     root.minsize(300, 200)
     menu = tki.Menu(root)
-    menu.add_command(label="Файл")
-    menu.add_command(label="Отчёт", command=data_filter)
+    edit_menu = tki.Menu(tearoff=0)
+    edit_menu.add_command(label="Редактировать ячейку", command=lambda: manual_modification(tree))
+    edit_menu.add_command(label="Удалить строку", command=lambda: deleting_entities(tree))
+    edit_menu.add_command(label="Добавить строку", command=lambda: adding_entities(tree))
+    file_menu = tki.Menu(tearoff=0)
+    file_menu.add_cascade(label="Редактировать", menu=edit_menu)
+    file_menu.add_command(label="Сохранить", command=lambda: save_to_excel(data))
+    report_menu = tki.Menu(tearoff=0)
+    report_menu.add_command(label="Фильтр", command=data_filter)
+    menu.add_cascade(label="Файл", menu=file_menu)
+    menu.add_cascade(label="Отчёт", menu=report_menu)
+    menu.add_command(label="График")
     root.config(menu=menu)
     tree = ttk.Treeview(columns=columns, show="headings", height=500)
     for i in range(len(columns)):
@@ -528,7 +733,7 @@ def interface():
         values = []
         for j in range(len(columns)):
             values.append(data.iloc[i, j])
-        tree.insert("", tki.END, values=values)
+        tree.insert("", tki.END, values=values, iid=i)
     scrollbar1 = ttk.Scrollbar(orient="horizontal", command=tree.xview)
     scrollbar1.pack(fill="x", side="bottom")
     tree["xscrollcommand"] = scrollbar1.set
@@ -539,17 +744,8 @@ def interface():
     root.mainloop()
 
 
-file = 'Analysing_demographic_data_of_customers_with_credit_history/BankChurners.csv'
+file = 'BankChurners.csv'
 data = read_from_text_file(file)
-qualitative_variables = ['Attrition_Flag', 'Gender', 'Education_Level',
-                         'Marital_Status', 'Income_Category', 'Card_Category']
-quantitative_variables = ['Customer_Age', 'Dependent_count', 'Months_on_book',
-                          'Total_Relationship_Count', 'Months_Inactive_12_mon',
-                          'Contacts_Count_12_mon', 'Credit_Limit',
-                          'Total_Revolving_Bal', 'Avg_Open_To_Buy',
-                          'Total_Amt_Chng_Q4_Q1', 'Total_Trans_Amt',
-                          'Total_Trans_Ct', 'Total_Ct_Chng_Q4_Q1',
-                          'Avg_Utilization_Ratio']
 data_columns = data.columns
 columns = []
 int_columns = []
@@ -563,4 +759,14 @@ for i in range(len(data_columns)):
         float_columns.append(data_columns[i])
     else:
         int_columns.append(data_columns[i])
+qualitative_variables = ['Attrition_Flag', 'Gender', 'Education_Level',
+                         'Marital_Status', 'Income_Category', 'Card_Category']
+quantitative_variables = ['Customer_Age', 'Dependent_count', 'Months_on_book',
+                          'Total_Relationship_Count', 'Months_Inactive_12_mon',
+                          'Contacts_Count_12_mon', 'Credit_Limit',
+                          'Total_Revolving_Bal', 'Avg_Open_To_Buy',
+                          'Total_Amt_Chng_Q4_Q1', 'Total_Trans_Amt',
+                          'Total_Trans_Ct', 'Total_Ct_Chng_Q4_Q1',
+                          'Avg_Utilization_Ratio']
+
 interface()
