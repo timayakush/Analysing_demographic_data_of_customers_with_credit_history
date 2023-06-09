@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Data analysis project v 2.1
+Data analysis project v 2.2
 """
 import tkinter as tki
 import tkinter.ttk as ttk
@@ -607,7 +607,11 @@ def statistic_report(data_local, var_list):
     Автор:
     """
     if var_list[0] in quantitative_variables:
-        statistics = data_local[var_list].describe()
+        statistics = pd.DataFrame({'var_list': var_list, 'max': [data_local[i].max() for i in var_list],
+                                   'min': [data_local[i].min() for i in var_list],
+                                   'mean': [data_local[i].mean() for i in var_list],
+                                   'sample_variance': [data_local[i].var() for i in var_list],
+                                   'standard_deviation': [data_local[i].std() for i in var_list]})
         return statistics
     else:
         statistics = pd.crosstab(index=data_local[var_list[0]], columns='frequency')
@@ -722,8 +726,11 @@ def interface():
     file_menu.add_command(label="Сохранить", command=lambda: save_to_excel(data))
     report_menu = tki.Menu(tearoff=0)
     report_menu.add_command(label="Фильтр", command=data_filter)
+    graphic_1_menu = tki.Menu(tearoff=0)
+    graphic_1_menu.add_command(label='')
     menu.add_cascade(label="Файл", menu=file_menu)
     menu.add_cascade(label="Отчёт", menu=report_menu)
+    menu.add_cascade(label="Графические отчёты", menu=report_menu)
     menu.add_command(label="График")
     root.config(menu=menu)
     tree = ttk.Treeview(columns=columns, show="headings", height=500)
@@ -744,7 +751,7 @@ def interface():
     root.mainloop()
 
 
-file = 'BankChurners.csv'
+file = 'Analysing_demographic_data_of_customers_with_credit_history/BankChurners.csv'
 data = read_from_text_file(file)
 data_columns = data.columns
 columns = []
