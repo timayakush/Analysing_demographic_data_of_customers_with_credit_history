@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Data analysis project v 2.7.1
+Data analysis project v 2.7.2
 """
 import tkinter as tki
 import tkinter.ttk as ttk
@@ -20,11 +20,11 @@ def read_from_text_file(file_name):
     Выходные данные: датафрейм с базой данных (pd.DataFrame())
     Автор:
     """
-    if '.csv' in file_name:
-        data_local = pd.read_csv(file_name)
-    else:
-        data_local = pd.read_excel(file_name)
-    return data_local
+    if '.csv' in file_name:  # если файл .csv
+        data_local = pd.read_csv(file_name)  # чтение из .csv
+    else:  # если файл .xlsx или .xls
+        data_local = pd.read_excel(file_name)  # чтение из .xlsx или .xls
+    return data_local  # создание и возврат датафрейма
 
 
 def read_from_bin_file(file_name):
@@ -34,8 +34,8 @@ def read_from_bin_file(file_name):
     Выходные данные: базa данных (массив, кортеж, словарь и т. д.)
     Автор:
     """
-    data_local = np.load(file_name)
-    return data_local
+    data_local = np.load(file_name)  # загрузка базы данных из двоичного файла
+    return data_local  # возвращение базы данных
 
 
 def save_to_excel(data_local):
@@ -48,7 +48,7 @@ def save_to_excel(data_local):
     ftypes = [('Excel файлы', '*.xlsx')]
     dlg = fld.SaveAs(filetypes=ftypes)
     path = dlg.show() + '.xlsx'
-    data_local.to_excel(path, index=False)
+    data_local.to_excel(path, index=False)  # сохранение базы данных в формате .xlsx
 
 
 def save_to_csv(file_name, data_local):
@@ -58,7 +58,7 @@ def save_to_csv(file_name, data_local):
     Выходные данные: нет
     Автор:
     """
-    np.savetxt(file_name, data_local, fmt='%s', delimiter=';')
+    np.savetxt(file_name, data_local, fmt='%s', delimiter=';')  # сохранение базы данных в формате .csv
 
 
 def save_to_bin_file(data_local, file_name):
@@ -68,7 +68,7 @@ def save_to_bin_file(data_local, file_name):
     Выходные данные: нет
     Автор:
     """
-    np.save(file_name, data_local)
+    np.save(file_name, data_local)  # сохранение базы данных в бинарном файле
 
 
 def save_graphics(file_name):
@@ -78,7 +78,7 @@ def save_graphics(file_name):
     Выходные данные: нет
     Автор:
     """
-    plt.savefig(file_name)
+    plt.savefig(file_name)  # сохранение графика в формате .png
 
 
 def plug(i):
@@ -667,41 +667,43 @@ def clustered_bar_chart():
                     Выходные данные: нет
                     Автор:
                     """
-                    fig.savefig('/Users/tima/desktop/to.png')
+                    fig.savefig('/Users/tima/desktop/to.png')  # сохранение в формате .png
 
-                fig = Figure(figsize=(10, 4), dpi=100)
-                ax = fig.add_subplot(111)
-                x_list = pd.unique(data[combobox_1.get()])
+                fig = Figure(figsize=(10, 4), dpi=100)  # создание экземпляра Figure для графиков
+                ax = fig.add_subplot(111)  # создание поля для графика
+                x_list = pd.unique(data[combobox_1.get()])  # инициализация датафрейма из уровней первой переменной
                 y_list = [sum(data[data[combobox_2.get()] == combobox_3.get()]
-                              [combobox_1.get()] == x) for x in x_list]
-                color = list('rbgmcyk')
-                ax.grid()
-                ax.bar(x_list, y_list, color=color)
+                              [combobox_1.get()] == x) for x in x_list]  # создание списка частот для каждого уровня
+                color = list('rbgmcyk')  # инициализация списка цветов для диаграммы
+                ax.grid()  # добавление сетки на график
+                ax.bar(x_list, y_list, color=color)  # построение диаграммы
                 canvas_1 = FigureCanvasTkAgg(fig, master=window)
                 canvas_1.draw()
                 canvas_1.get_tk_widget().pack(side=tki.TOP, fill=tki.NONE, expand=0)
-                btn = tki.Button(window, text='Сохранить', command=selected_4)
-                btn.pack(anchor=tki.S)
+                btn = tki.Button(window, text='Сохранить', command=selected_4)  # создание кнопки для сохранения
+                btn.pack(anchor=tki.S)  # расположение кнопки
                 window.after(200, None)
 
-            selection = combobox_2.get()
-            a = list(data[selection].unique())
-            combobox_3 = ttk.Combobox(window, values=a, state='readonly')
-            combobox_3.place(x=250, y=60)
-            combobox_3.bind('<<ComboboxSelected>>', selected_3)
+            selection = combobox_2.get()  # получение текущего выбранного значения из второго списка
+            a = list(data[selection].unique())  # инициализация списка из уровней выбранной переменной
+            combobox_3 = ttk.Combobox(window, values=a, state='readonly')  # создание третьего выпадающего списка
+            combobox_3.place(x=250, y=60)  # расположение выпадающего списка
+            combobox_3.bind('<<ComboboxSelected>>', selected_3)  # отслеживание статуса спика
 
-        drop = combobox_1.get()
-        combobox_2 = ttk.Combobox(window, values=[x for x in qualitative_variables if x != drop], state='readonly')
-        combobox_2.place(x=20, y=60)
-        combobox_2.bind('<<ComboboxSelected>>', selected_2)
+        drop = combobox_1.get()  # сохранение индекса использованной до этого переменной
+        combobox_2 = ttk.Combobox(window, values=[x for x in qualitative_variables if x != drop], state='readonly')  #
+        # создание второго выпадающего списка из оставшихся переменных
+        combobox_2.place(x=20, y=60)  # расположение выпадающего списка
+        combobox_2.bind('<<ComboboxSelected>>', selected_2)  # отслеживание статуса списка
 
-    window = tki.Toplevel()
-    window.title("Кластеризованная столбчатая диаграмма")
-    window.geometry("500x550")
+    window = tki.Toplevel()  # открывает новое диалоговое окно
+    window.title("Кластеризованная столбчатая диаграмма")  # название окна
+    window.geometry("500x550")  # размер окна
     window.resizable(False, False)
-    combobox_1 = ttk.Combobox(window, values=qualitative_variables, state='readonly')
-    combobox_1.place(x=20, y=30)
-    combobox_1.bind('<<ComboboxSelected>>', selected_1)
+    combobox_1 = ttk.Combobox(window, values=qualitative_variables, state='readonly')  # создание первого выпадающего
+    # списка
+    combobox_1.place(x=20, y=30)  # расположение выпадающего списка
+    combobox_1.bind('<<ComboboxSelected>>', selected_1)  # отслеживание статуса списка
 
 
 def categorized_bar_chart():
@@ -739,52 +741,58 @@ def categorized_bar_chart():
                     Выходные данные: нет
                     Автор:
                     """
-                    fig.savefig('/Users/tima/desktop/to.png')
+                    fig.savefig('/Users/tima/desktop/to.png')  # сохранение в формате .png
 
-                fig = Figure(figsize=(10, 4), dpi=100)
-                column_size = len(data[data[combobox_2.get()] == combobox_3.get()][combobox_1.get()])
-                s_dev = np.std(data[data[combobox_2.get()] == combobox_3.get()][combobox_1.get()])
+                fig = Figure(figsize=(10, 4), dpi=100)  # создание экземпляра Figure для графиков
+                column_size = len(data[data[combobox_2.get()] == combobox_3.get()][combobox_1.get()])  # нахождение
+                # размера выборки
+                s_dev = np.std(data[data[combobox_2.get()] == combobox_3.get()][combobox_1.get()])  # нахождение
+                # среднего отклонения
                 iqr = np.subtract(*np.percentile(data[data[combobox_2.get()] == combobox_3.get()][combobox_1.get()],
                                                  [75, 25]))
                 min_max = max(data[data[combobox_2.get()] == combobox_3.get()][combobox_1.get()]) -\
-                    min(data[data[combobox_2.get()] == combobox_3.get()][combobox_1.get()])
-                sturges = 1 + 3.322 * np.log10(column_size)
-                scott = min_max * np.power(column_size, 1 / 3) / (3.5 * s_dev)
-                freedman = min_max * np.power(column_size, 1 / 3) / (2 * iqr)
-                labels = ['Sturges', 'Scott', 'Freedman-Diaconis', 'Categories']
-                colors = ['#3e1ca8', '#ff3442', '#00e277', '#ffe4e1']
-                n_bins = list(map(round, [sturges, scott, freedman])) + [10]
+                    min(data[data[combobox_2.get()] == combobox_3.get()][combobox_1.get()])  # нахождение размаха
+                # выборки
+                sturges = 1 + 3.322 * np.log10(column_size)  # Sturges' formula
+                scott = min_max * np.power(column_size, 1 / 3) / (3.5 * s_dev)  # Scott's rule
+                freedman = min_max * np.power(column_size, 1 / 3) / (2 * iqr)  # Freedman–Diaconis' choice
+                labels = ['Sturges', 'Scott', 'Freedman-Diaconis', 'Categories']  # инициализация списка названий для
+                # гистограмм
+                colors = ['#3e1ca8', '#ff3442', '#00e277', '#ffe4e1']  # инициализация списка цветов для гистограммы
+                n_bins = list(map(round, [sturges, scott, freedman])) + [10]  # список из количества интервалов на
+                # графиках
                 for i in range(4):
-                    ax = fig.add_subplot(int('22' + str(i + 1)))
+                    ax = fig.add_subplot(int('22' + str(i + 1)))  # создание поля для графика
                     ax.hist(data[data[combobox_2.get()] == combobox_3.get()][combobox_1.get()], bins=n_bins[i],
-                            color=colors[i])
-                    ax.set_title(labels[i])
+                            color=colors[i])  # построение диаграммы
+                    ax.set_title(labels[i])  # добавление названия
                     ax.axvline(np.mean(data[data[combobox_2.get()] == combobox_3.get()][combobox_1.get()]),
-                               linestyle='dashed', color='black')
+                               linestyle='dashed', color='black')  # построение линии через среднее значение
                 canvas_1 = FigureCanvasTkAgg(fig, master=window)
                 canvas_1.draw()
                 canvas_1.get_tk_widget().pack(side=tki.TOP, fill=tki.NONE, expand=0)
-                btn = tki.Button(window, text='Сохранить', command=selected_4)
-                btn.pack(anchor=tki.S)
+                btn = tki.Button(window, text='Сохранить', command=selected_4)  # создание кнопки сохранения
+                btn.pack(anchor=tki.S)  # расположение кнопки
                 window.after(200, None)
 
-            selection = combobox_2.get()
-            a = list(data[selection].unique())
-            combobox_3 = ttk.Combobox(window, values=a, state='readonly')
-            combobox_3.place(x=250, y=60)
-            combobox_3.bind('<<ComboboxSelected>>', selected_3)
+            selection = combobox_2.get()  # получение выбранного значения из второго списка
+            a = list(data[selection].unique())  # инициализация списка из уровней выбранной переменной
+            combobox_3 = ttk.Combobox(window, values=a, state='readonly')  # создание третьего выпадающего списка
+            combobox_3.place(x=250, y=60)  # расположение списка
+            combobox_3.bind('<<ComboboxSelected>>', selected_3)  # отслеживание статуса списка
 
-        combobox_2 = ttk.Combobox(window, values=qualitative_variables, state='readonly')
-        combobox_2.place(x=20, y=60)
-        combobox_2.bind('<<ComboboxSelected>>', selected_2)
+        combobox_2 = ttk.Combobox(window, values=qualitative_variables, state='readonly')  # создание второго списка
+        combobox_2.place(x=20, y=60)  # расположение списка
+        combobox_2.bind('<<ComboboxSelected>>', selected_2)  # отслеживание статуса списка
 
-    window = tki.Toplevel()
-    window.title("Категоризированная гистограмма")
-    window.geometry("500x550")
+    window = tki.Toplevel()  # создание диалогового окна
+    window.title("Категоризированная гистограмма")  # название окна
+    window.geometry("500x550")  # размер окна
     window.resizable(False, False)
-    combobox_1 = ttk.Combobox(window, values=quantitative_variables, state='readonly')
-    combobox_1.place(x=20, y=30)
-    combobox_1.bind('<<ComboboxSelected>>', selected_1)
+    combobox_1 = ttk.Combobox(window, values=quantitative_variables, state='readonly')  # создание первого выпадающего
+    # списка
+    combobox_1.place(x=20, y=30)  # расположение списка
+    combobox_1.bind('<<ComboboxSelected>>', selected_1)  # отслеживание статуса списка
 
 
 def box_and_whiskers_chart():
@@ -822,35 +830,36 @@ def box_and_whiskers_chart():
                     Выходные данные: нет
                     Автор:
                     """
-                    fig.savefig('/Users/tima/desktop/to.png')
+                    fig.savefig('/Users/tima/desktop/to.png')  # сохранение в формате .png
 
-                fig = Figure(figsize=(10, 4), dpi=100)
-                ax = fig.add_subplot(111)
-                ax.boxplot(data[data[combobox_2.get()] == combobox_3.get()][combobox_1.get()], vert=False)
+                fig = Figure(figsize=(10, 4), dpi=100)  # создание экземпляра Figure для графиков
+                ax = fig.add_subplot(111)  # создание поля для графика
+                ax.boxplot(data[data[combobox_2.get()] == combobox_3.get()][combobox_1.get()], vert=False)  # построение
+                # диаграммы
                 canvas_1 = FigureCanvasTkAgg(fig, master=window)
                 canvas_1.draw()
                 canvas_1.get_tk_widget().pack(side=tki.TOP, fill=tki.NONE, expand=0)
-                btn = tki.Button(window, text='Сохранить', command=selected_4)
-                btn.pack(anchor=tki.S)
+                btn = tki.Button(window, text='Сохранить', command=selected_4)  # создание кнопки сохранения
+                btn.pack(anchor=tki.S)  # расположение кнопки
                 window.after(200, None)
 
-            selection = combobox_2.get()
-            a = list(data[selection].unique())
-            combobox_3 = ttk.Combobox(window, values=a, state='readonly')
-            combobox_3.place(x=250, y=60)
-            combobox_3.bind('<<ComboboxSelected>>', selected_3)
+            selection = combobox_2.get()  # получение выбранного значения
+            a = list(data[selection].unique())  # инициализация списка из уровней выбранной переменной
+            combobox_3 = ttk.Combobox(window, values=a, state='readonly')  # создание выпадающего списка
+            combobox_3.place(x=250, y=60)  # расположение списка
+            combobox_3.bind('<<ComboboxSelected>>', selected_3)  # отслеживание статуса списка
 
-        combobox_2 = ttk.Combobox(window, values=qualitative_variables, state='readonly')
-        combobox_2.place(x=20, y=60)
-        combobox_2.bind('<<ComboboxSelected>>', selected_2)
+        combobox_2 = ttk.Combobox(window, values=qualitative_variables, state='readonly')  # создание выпадающего списка
+        combobox_2.place(x=20, y=60)  # расположение списка
+        combobox_2.bind('<<ComboboxSelected>>', selected_2)  # отслеживание списка
 
-    window = tki.Toplevel()
-    window.title("Категоризированная диаграмма Бокса-Вискера")
-    window.geometry("500x550")
+    window = tki.Toplevel()  # создание диалогового окна
+    window.title("Категоризированная диаграмма Бокса-Вискера")  # название окна
+    window.geometry("500x550")  # размер окна
     window.resizable(False, False)
-    combobox_1 = ttk.Combobox(window, values=quantitative_variables, state='readonly')
-    combobox_1.place(x=20, y=30)
-    combobox_1.bind('<<ComboboxSelected>>', selected_1)
+    combobox_1 = ttk.Combobox(window, values=quantitative_variables, state='readonly')  # создание выпадающего списка
+    combobox_1.place(x=20, y=30)  # расположение списка
+    combobox_1.bind('<<ComboboxSelected>>', selected_1)  # отслеживание статуса списка
 
 
 def scatter_chart():
@@ -895,42 +904,46 @@ def scatter_chart():
                         Выходные данные: нет
                         Автор:
                         """
-                        fig.savefig('/Users/tima/desktop/to.png')
+                        fig.savefig('/Users/tima/desktop/to.png')  # сохранение в формате .png
 
-                    fig = Figure(figsize=(10, 4), dpi=100)
-                    ax = fig.add_subplot(111)
-                    x_list = data[data[combobox_3.get()] == combobox_4.get()][combobox_1.get()]
-                    y_list = data[data[combobox_3.get()] == combobox_4.get()][combobox_2.get()]
-                    ax.scatter(x_list, y_list, s=1)
+                    fig = Figure(figsize=(10, 4), dpi=100)  # создание экземпляра Figure для графиков
+                    ax = fig.add_subplot(111)  # создание поля для графика
+                    x_list = data[data[combobox_3.get()] == combobox_4.get()][combobox_1.get()]  # создание датафрейма
+                    # для первой переменной
+                    y_list = data[data[combobox_3.get()] == combobox_4.get()][combobox_2.get()]  # создание датафрейма
+                    # для второй переменной
+                    ax.scatter(x_list, y_list, s=1)  # создание графика
                     canvas_1 = FigureCanvasTkAgg(fig, master=window)
                     canvas_1.draw()
                     canvas_1.get_tk_widget().pack(side=tki.TOP, fill=tki.NONE, expand=0)
-                    btn = tki.Button(window, text='Сохранить', command=selected_5)
-                    btn.pack(anchor=tki.S)
+                    btn = tki.Button(window, text='Сохранить', command=selected_5)  # создание кнопки сохранения
+                    btn.pack(anchor=tki.S)  # расположение кнопки
                     window.after(200, None)
 
-                selection = combobox_3.get()
-                a = list(data[selection].unique())
-                combobox_4 = ttk.Combobox(window, values=a, state='readonly')
-                combobox_4.place(x=250, y=90)
-                combobox_4.bind('<<ComboboxSelected>>', selected_4)
+                selection = combobox_3.get()  # получение выбранного значения
+                a = list(data[selection].unique())  # инициализация списка из уровней выбранной переменной
+                combobox_4 = ttk.Combobox(window, values=a, state='readonly')  # создание выпадающего списка
+                combobox_4.place(x=250, y=90)  # расположение списка
+                combobox_4.bind('<<ComboboxSelected>>', selected_4)  # отслеживание статуса списка
 
-            combobox_3 = ttk.Combobox(window, values=qualitative_variables, state='readonly')
-            combobox_3.place(x=20, y=90)
-            combobox_3.bind('<<ComboboxSelected>>', selected_3)
+            combobox_3 = ttk.Combobox(window, values=qualitative_variables, state='readonly')  # создание выпадающего
+            # списка
+            combobox_3.place(x=20, y=90)  # расположение списка
+            combobox_3.bind('<<ComboboxSelected>>', selected_3)  # отслеживание статуса списка
 
-        drop = combobox_1.get()
-        combobox_2 = ttk.Combobox(window, values=[x for x in quantitative_variables if x != drop], state='readonly')
-        combobox_2.place(x=20, y=60)
-        combobox_2.bind('<<ComboboxSelected>>', selected_2)
+        drop = combobox_1.get()  # сохранения индекса выбранной переменной
+        combobox_2 = ttk.Combobox(window, values=[x for x in quantitative_variables if x != drop], state='readonly')  #
+        # создание выпадающего списка
+        combobox_2.place(x=20, y=60)  # расположение списка
+        combobox_2.bind('<<ComboboxSelected>>', selected_2)  # отслеживание статуса списка
 
-    window = tki.Toplevel()
-    window.title("Категоризированная диаграмма рассеивания")
-    window.geometry("500x550")
+    window = tki.Toplevel()  # создание диалогового окна
+    window.title("Категоризированная диаграмма рассеивания")  # название окна
+    window.geometry("500x550")  # размер окна
     window.resizable(False, False)
-    combobox_1 = ttk.Combobox(window, values=quantitative_variables, state='readonly')
-    combobox_1.place(x=20, y=30)
-    combobox_1.bind('<<ComboboxSelected>>', selected_1)
+    combobox_1 = ttk.Combobox(window, values=quantitative_variables, state='readonly')  # создание выпадающего списка
+    combobox_1.place(x=20, y=30)  # расположение списка
+    combobox_1.bind('<<ComboboxSelected>>', selected_1)  # отслеживание статуса списка
 
 
 def interface():
@@ -981,9 +994,9 @@ def interface():
     root.mainloop()
 
 
-file = 'Analysing_demographic_data_of_customers_with_credit_history/BankChurners.csv'
-data = read_from_text_file(file)
-data_columns = data.columns
+file = 'Analysing_demographic_data_of_customers_with_credit_history/BankChurners.csv'  # файл с исходной базой данных
+data = read_from_text_file(file)  # чтение файла
+data_columns = data.columns  # создание списка из столбцов
 columns = []
 int_columns = []
 string_columns = []
@@ -997,13 +1010,12 @@ for i in range(len(data_columns)):
     else:
         int_columns.append(data_columns[i])
 qualitative_variables = ['Attrition_Flag', 'Gender', 'Education_Level',
-                         'Marital_Status', 'Income_Category', 'Card_Category']
+                         'Marital_Status', 'Income_Category', 'Card_Category']  # список качественных переменных
 quantitative_variables = ['Customer_Age', 'Dependent_count', 'Months_on_book',
                           'Total_Relationship_Count', 'Months_Inactive_12_mon',
                           'Contacts_Count_12_mon', 'Credit_Limit',
                           'Total_Revolving_Bal', 'Avg_Open_To_Buy',
                           'Total_Amt_Chng_Q4_Q1', 'Total_Trans_Amt',
                           'Total_Trans_Ct', 'Total_Ct_Chng_Q4_Q1',
-                          'Avg_Utilization_Ratio']
-
+                          'Avg_Utilization_Ratio']  # список количественных переменных
 interface()
