@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Data analysis project v 2.2
+Data analysis project v 2.3
 """
 import tkinter as tki
 import tkinter.ttk as ttk
@@ -9,6 +9,8 @@ from tkinter import filedialog as fld
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
 
 
 def read_from_text_file(file_name):
@@ -634,6 +636,44 @@ def pivot_table(data_local, x, y, z, v, func):
                           aggfunc=func)
 
 
+def graph_1():
+
+    def selected_1(event):
+        def selected_2(event):
+
+            def selected_3(event):
+                fig = Figure(figsize=(10, 4), dpi=100)
+                ax = fig.add_subplot(111)
+                x_list = pd.unique(data[combobox_1.get()])
+                y_list = [sum(data[data[combobox_2.get()] == combobox_3.get()]
+                              [combobox_1.get()] == x) for x in x_list]
+                color = list('rbgmcyk')
+                ax.grid()
+                ax.bar(x_list, y_list, color=color)
+                canvas_1 = FigureCanvasTkAgg(fig, master=window)
+                canvas_1.draw()
+                canvas_1.get_tk_widget().pack(side=tki.TOP, fill=tki.NONE, expand=0)
+                window.after(200, None)
+
+            selection = combobox_2.get()
+            a = list(data[selection].unique())
+            combobox_3 = ttk.Combobox(window, values=a, state='readonly')
+            combobox_3.place(x=250, y=60)
+            combobox_3.bind('<<ComboboxSelected>>', selected_3)
+        drop = combobox_1.get()
+        combobox_2 = ttk.Combobox(window, values=[x for x in qualitative_variables if x != drop], state='readonly')
+        combobox_2.place(x=20, y=60)
+        combobox_2.bind('<<ComboboxSelected>>', selected_2)
+
+    window = tki.Toplevel()
+    window.title("Кластеризованная столбчатая диаграмма")
+    window.geometry("500x550")
+    window.resizable(False, False)
+    combobox_1 = ttk.Combobox(window, values=qualitative_variables, state='readonly')
+    combobox_1.place(x=20, y=30)
+    combobox_1.bind('<<ComboboxSelected>>', selected_1)
+
+
 def clustered_bar_chart(data_local, x_local, y):
     """
     Создание кластеризованной столбчатой диаграммы для пары качественных переменных
@@ -727,11 +767,10 @@ def interface():
     report_menu = tki.Menu(tearoff=0)
     report_menu.add_command(label="Фильтр", command=data_filter)
     graphic_1_menu = tki.Menu(tearoff=0)
-    graphic_1_menu.add_command(label='')
+    graphic_1_menu.add_command(label='Кластеризованная столбчатая диаграмма', command=graph_1)
     menu.add_cascade(label="Файл", menu=file_menu)
     menu.add_cascade(label="Отчёт", menu=report_menu)
-    menu.add_cascade(label="Графические отчёты", menu=report_menu)
-    menu.add_command(label="График")
+    menu.add_cascade(label="Графические отчёты", menu=graphic_1_menu)
     root.config(menu=menu)
     tree = ttk.Treeview(columns=columns, show="headings", height=500)
     for i in range(len(columns)):
