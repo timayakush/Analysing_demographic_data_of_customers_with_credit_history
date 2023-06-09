@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Data analysis project v 2.4
+Data analysis project v 2.5
 """
 import tkinter as tki
 import tkinter.ttk as ttk
@@ -675,6 +675,13 @@ def clustered_bar_chart():
 
 
 def categorized_bar_chart():
+    """
+    Создание категоризированной гистограммы для пары 'количественная - качественная' переменных
+    Входные данные: база данных (pd.DataFrame()), количественная переменная (строка), качественная переменная и её
+    значение (массив, кортеж, словарь и т. д.)
+    Выходные данные: нет
+    Автор:
+    """
     def selected_1(event):
         def selected_2(event):
             def selected_3(event):
@@ -718,34 +725,38 @@ def categorized_bar_chart():
     combobox_1.bind('<<ComboboxSelected>>', selected_1)
 
 
-def categorized_bar_chart_1(data_local, x, y):
-    """
-    Создание категоризированной гистограммы для пары 'количественная - качественная' переменных
-    Входные данные: база данных (pd.DataFrame()), количественная переменная (строка), качественная переменная и её
-    значение (массив, кортеж, словарь и т. д.)
-    Выходные данные: нет
-    Автор:
-    """
-    column_size = len(data_local[data_local[y[0]] == y[1]][x])
-    s_dev = np.std(data_local[data_local[y[0]] == y[1]][x])
-    iqr = np.subtract(*np.percentile(data_local[data_local[y[0]] == y[1]][x], [75, 25]))
-    min_max = max(data_local[data_local[y[0]] == y[1]][x]) - min(data_local[data_local[y[0]] == y[1]][x])
-    sturges = 1 + 3.322 * np.log10(column_size)
-    scott = min_max * np.power(column_size, 1 / 3) / (3.5 * s_dev)
-    freedman = min_max * np.power(column_size, 1 / 3) / (2 * iqr)
-    labels = ['Sturges', 'Scott', 'Freedman-Diaconis', 'Categories']
-    colors = ['#3e1ca8', '#ff3442', '#00e277', '#ffe4e1']
-    n_bins = list(map(round, [sturges, scott, freedman])) + [10]
-    _, axes = plt.subplots(nrows=2, ncols=2, figsize=(15, 15))
-    for i in range(4):
-        ax = axes[i // 2, i % 2]
-        ax.hist(data_local[data_local[y[0]] == y[1]][x], bins=n_bins[i], color=colors[i])
-        ax.set_title(labels[i])
-        ax.axvline(np.mean(data_local[data_local[y[0]] == y[1]][x]), linestyle='dashed', color='black')
-    plt.show()
+def box_and_whiskers_chart():
+    def selected_1(event):
+        def selected_2(event):
+            def selected_3(event):
+                fig = Figure(figsize=(10, 4), dpi=100)
+                ax = fig.add_subplot(111)
+                ax.boxplot(data[data[combobox_2.get()] == combobox_3.get()][combobox_1.get()], vert=False)
+                canvas_1 = FigureCanvasTkAgg(fig, master=window)
+                canvas_1.draw()
+                canvas_1.get_tk_widget().pack(side=tki.TOP, fill=tki.NONE, expand=0)
+                window.after(200, None)
+
+            selection = combobox_2.get()
+            a = list(data[selection].unique())
+            combobox_3 = ttk.Combobox(window, values=a, state='readonly')
+            combobox_3.place(x=250, y=60)
+            combobox_3.bind('<<ComboboxSelected>>', selected_3)
+
+        combobox_2 = ttk.Combobox(window, values=qualitative_variables, state='readonly')
+        combobox_2.place(x=20, y=60)
+        combobox_2.bind('<<ComboboxSelected>>', selected_2)
+
+    window = tki.Toplevel()
+    window.title("Кластеризованная столбчатая диаграмма")
+    window.geometry("500x550")
+    window.resizable(False, False)
+    combobox_1 = ttk.Combobox(window, values=quantitative_variables, state='readonly')
+    combobox_1.place(x=20, y=30)
+    combobox_1.bind('<<ComboboxSelected>>', selected_1)
 
 
-def box_and_whiskers_chart(data_local, x, y):
+def box_and_whiskers_chart_1(data_local, x, y):
     """
     Создание категоризированной диаграммы Бокса-Вискера для пары 'количественная - качественная' переменных
     Входные данные: база данных (pd.DataFrame()), количественная переменная (строка), качественная переменная и её
@@ -796,6 +807,7 @@ def interface():
     graphic_menu = tki.Menu(tearoff=0)
     graphic_menu.add_command(label='Кластеризованная столбчатая диаграмма', command=clustered_bar_chart)
     graphic_menu.add_command(label='Категоризированная гистограмма', command=categorized_bar_chart)
+    graphic_menu.add_command(label='Категоризированная диаграмма Бокса-Вискера', command=box_and_whiskers_chart)
     menu.add_cascade(label="Файл", menu=file_menu)
     menu.add_cascade(label="Отчёт", menu=report_menu)
     menu.add_cascade(label="Графические отчёты", menu=graphic_menu)
