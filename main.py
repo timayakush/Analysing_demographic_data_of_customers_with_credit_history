@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Data analysis project v 2.7.2
+Data analysis project v 2.8
 """
 import tkinter as tki
 import tkinter.ttk as ttk
@@ -11,6 +11,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
+import configparser
 
 
 def read_from_text_file(file_name):
@@ -123,7 +124,7 @@ def adding_entities(tree):
         tree.insert("", tki.END, values=entities, iid=len(data))
     add_window = tki.Toplevel()
     add_window.title("Добавление строки")
-    add_window.geometry("350x525")
+    add_window.geometry(config['Adding_menu']['x'] + 'x' + config['Adding_menu']['y'])
     add_window.resizable(False, False)
     combobox = 23 * [0]
     spinbox = 23 * [0]
@@ -172,7 +173,7 @@ def deleting_entities(tree):
             return
         check_window = tki.Toplevel()
         check_window.title("Подтверждение")
-        check_window.geometry('200x100')
+        check_window.geometry(config['Deleting_menu']['x'] + 'x' + config['Deleting_menu']['y'])
         check_window.resizable(False, False)
         label = ttk.Label(check_window, text="Удалить выделенную строку?")
         label.pack(anchor="c")
@@ -242,7 +243,7 @@ def manual_modification(tree):
         row_num = int(tree.selection()[0])
         edit_window = tki.Toplevel()
         edit_window.title("Редактирование")
-        edit_window.geometry('350x100')
+        edit_window.geometry(config['Modification_menu']['x'] + 'x' + config['Modification_menu']['y'])
         edit_window.resizable(False, False)
         edit_combobox = ttk.Combobox(edit_window, values=columns)
         edit_combobox.current(0)
@@ -469,7 +470,7 @@ def data_filter():
                 window.destroy()
                 window1 = tki.Toplevel()
                 window1.title("Отфильтрованная база данных")
-                window1.geometry('600x250')
+                window1.geometry(config['Filter_menu']['x'] + 'x' + config['Filter_menu']['y'])
                 menu1 = tki.Menu(window1)
                 menu1.add_command(label="Сохранить", command=lambda: save_to_excel(data_filter))
                 window1.config(menu=menu1)
@@ -493,7 +494,7 @@ def data_filter():
 
     window = tki.Toplevel()
     window.title("Фильтр")
-    window.geometry("500x550")
+    window.geometry(config['Side_menu']['x'] + 'x' + config['Side_menu']['y'])
     window.resizable(False, False)
     checkbutton_var = []
     checkbutton = []
@@ -669,7 +670,7 @@ def clustered_bar_chart():
                     """
                     fig.savefig('/Users/tima/desktop/to.png')  # сохранение в формате .png
 
-                fig = Figure(figsize=(10, 4), dpi=100)  # создание экземпляра Figure для графиков
+                fig = Figure(figsize=(15, 7), dpi=100)  # создание экземпляра Figure для графиков
                 ax = fig.add_subplot(111)  # создание поля для графика
                 x_list = pd.unique(data[combobox_1.get()])  # инициализация датафрейма из уровней первой переменной
                 y_list = [sum(data[data[combobox_2.get()] == combobox_3.get()]
@@ -698,8 +699,7 @@ def clustered_bar_chart():
 
     window = tki.Toplevel()  # открывает новое диалоговое окно
     window.title("Кластеризованная столбчатая диаграмма")  # название окна
-    window.geometry("500x550")  # размер окна
-    window.resizable(False, False)
+    window.geometry(config['Graphic_menu']['x'] + 'x' + config['Graphic_menu']['y'])  # размер окна
     combobox_1 = ttk.Combobox(window, values=qualitative_variables, state='readonly')  # создание первого выпадающего
     # списка
     combobox_1.place(x=20, y=30)  # расположение выпадающего списка
@@ -743,7 +743,7 @@ def categorized_bar_chart():
                     """
                     fig.savefig('/Users/tima/desktop/to.png')  # сохранение в формате .png
 
-                fig = Figure(figsize=(10, 4), dpi=100)  # создание экземпляра Figure для графиков
+                fig = Figure(figsize=(15, 7), dpi=100)  # создание экземпляра Figure для графиков
                 column_size = len(data[data[combobox_2.get()] == combobox_3.get()][combobox_1.get()])  # нахождение
                 # размера выборки
                 s_dev = np.std(data[data[combobox_2.get()] == combobox_3.get()][combobox_1.get()])  # нахождение
@@ -787,8 +787,7 @@ def categorized_bar_chart():
 
     window = tki.Toplevel()  # создание диалогового окна
     window.title("Категоризированная гистограмма")  # название окна
-    window.geometry("500x550")  # размер окна
-    window.resizable(False, False)
+    window.geometry(config['Graphic_menu']['x'] + 'x' + config['Graphic_menu']['y'])  # размер окна
     combobox_1 = ttk.Combobox(window, values=quantitative_variables, state='readonly')  # создание первого выпадающего
     # списка
     combobox_1.place(x=20, y=30)  # расположение списка
@@ -832,7 +831,7 @@ def box_and_whiskers_chart():
                     """
                     fig.savefig('/Users/tima/desktop/to.png')  # сохранение в формате .png
 
-                fig = Figure(figsize=(10, 4), dpi=100)  # создание экземпляра Figure для графиков
+                fig = Figure(figsize=(15, 7), dpi=100)  # создание экземпляра Figure для графиков
                 ax = fig.add_subplot(111)  # создание поля для графика
                 ax.boxplot(data[data[combobox_2.get()] == combobox_3.get()][combobox_1.get()], vert=False)  # построение
                 # диаграммы
@@ -855,8 +854,7 @@ def box_and_whiskers_chart():
 
     window = tki.Toplevel()  # создание диалогового окна
     window.title("Категоризированная диаграмма Бокса-Вискера")  # название окна
-    window.geometry("500x550")  # размер окна
-    window.resizable(False, False)
+    window.geometry(config['Graphic_menu']['x'] + 'x' + config['Graphic_menu']['y'])  # размер окна
     combobox_1 = ttk.Combobox(window, values=quantitative_variables, state='readonly')  # создание выпадающего списка
     combobox_1.place(x=20, y=30)  # расположение списка
     combobox_1.bind('<<ComboboxSelected>>', selected_1)  # отслеживание статуса списка
@@ -906,7 +904,7 @@ def scatter_chart():
                         """
                         fig.savefig('/Users/tima/desktop/to.png')  # сохранение в формате .png
 
-                    fig = Figure(figsize=(10, 4), dpi=100)  # создание экземпляра Figure для графиков
+                    fig = Figure(figsize=(15, 7), dpi=100)  # создание экземпляра Figure для графиков
                     ax = fig.add_subplot(111)  # создание поля для графика
                     x_list = data[data[combobox_3.get()] == combobox_4.get()][combobox_1.get()]  # создание датафрейма
                     # для первой переменной
@@ -939,8 +937,7 @@ def scatter_chart():
 
     window = tki.Toplevel()  # создание диалогового окна
     window.title("Категоризированная диаграмма рассеивания")  # название окна
-    window.geometry("500x550")  # размер окна
-    window.resizable(False, False)
+    window.geometry(config['Graphic_menu']['x'] + 'x' + config['Graphic_menu']['y'])  # размер окна
     combobox_1 = ttk.Combobox(window, values=quantitative_variables, state='readonly')  # создание выпадающего списка
     combobox_1.place(x=20, y=30)  # расположение списка
     combobox_1.bind('<<ComboboxSelected>>', selected_1)  # отслеживание статуса списка
@@ -955,8 +952,8 @@ def interface():
     """
     root = tki.Tk()
     root.title('Приложение для анализа данных кредитных историй заёмщиков')
-    root.geometry('600x250')
-    root.minsize(300, 200)
+    root.geometry(config['Main_menu']['x'] + 'x' + config['Main_menu']['y'])
+    root.minsize(int(config['Main_menu']['x_min']), int(config['Main_menu']['y_min']))
     menu = tki.Menu(root)
     edit_menu = tki.Menu(tearoff=0)
     edit_menu.add_command(label="Редактировать ячейку", command=lambda: manual_modification(tree))
@@ -976,7 +973,7 @@ def interface():
     menu.add_cascade(label="Отчёт", menu=report_menu)
     menu.add_cascade(label="Графические отчёты", menu=graphic_menu)
     root.config(menu=menu)
-    tree = ttk.Treeview(columns=columns, show="headings", height=500)
+    tree = ttk.Treeview(columns=columns, show="headings", height=int(config['Main_menu']['tree_height']))
     for i in range(len(columns)):
         tree.heading(columns[i], text=columns[i])
     for i in range(len(data)):
@@ -994,6 +991,8 @@ def interface():
     root.mainloop()
 
 
+config = configparser.ConfigParser()  # создание экземпляра ConfigParser
+config.read('Analysing_demographic_data_of_customers_with_credit_history/config.ini')  # чтение конфигурационного файла
 file = 'Analysing_demographic_data_of_customers_with_credit_history/BankChurners.csv'  # файл с исходной базой данных
 data = read_from_text_file(file)  # чтение файла
 data_columns = data.columns  # создание списка из столбцов
