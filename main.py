@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Data analysis project v 2.6
+Data analysis project v 2.7
 """
 import tkinter as tki
 import tkinter.ttk as ttk
@@ -640,8 +640,11 @@ def clustered_bar_chart():
 
     def selected_1(event):
         def selected_2(event):
-
             def selected_3(event):
+                def selected_4():
+                    print(4)
+                    fig.savefig('/Users/tima/desktop/to.png')
+
                 fig = Figure(figsize=(10, 4), dpi=100)
                 ax = fig.add_subplot(111)
                 x_list = pd.unique(data[combobox_1.get()])
@@ -653,6 +656,8 @@ def clustered_bar_chart():
                 canvas_1 = FigureCanvasTkAgg(fig, master=window)
                 canvas_1.draw()
                 canvas_1.get_tk_widget().pack(side=tki.TOP, fill=tki.NONE, expand=0)
+                btn = tki.Button(window, text='Сохранить', command=selected_4)
+                btn.pack(anchor=tki.S)
                 window.after(200, None)
 
             selection = combobox_2.get()
@@ -685,6 +690,10 @@ def categorized_bar_chart():
     def selected_1(event):
         def selected_2(event):
             def selected_3(event):
+                def selected_4():
+                    print(4)
+                    fig.savefig('/Users/tima/desktop/to.png')
+
                 fig = Figure(figsize=(10, 4), dpi=100)
                 column_size = len(data[data[combobox_2.get()] == combobox_3.get()][combobox_1.get()])
                 s_dev = np.std(data[data[combobox_2.get()] == combobox_3.get()][combobox_1.get()])
@@ -708,6 +717,8 @@ def categorized_bar_chart():
                 canvas_1 = FigureCanvasTkAgg(fig, master=window)
                 canvas_1.draw()
                 canvas_1.get_tk_widget().pack(side=tki.TOP, fill=tki.NONE, expand=0)
+                btn = tki.Button(window, text='Сохранить', command=selected_4)
+                btn.pack(anchor=tki.S)
                 window.after(200, None)
 
             selection = combobox_2.get()
@@ -740,12 +751,18 @@ def box_and_whiskers_chart():
     def selected_1(event):
         def selected_2(event):
             def selected_3(event):
+                def selected_4():
+                    print(4)
+                    fig.savefig('/Users/tima/desktop/to.png')
+
                 fig = Figure(figsize=(10, 4), dpi=100)
                 ax = fig.add_subplot(111)
                 ax.boxplot(data[data[combobox_2.get()] == combobox_3.get()][combobox_1.get()], vert=False)
                 canvas_1 = FigureCanvasTkAgg(fig, master=window)
                 canvas_1.draw()
                 canvas_1.get_tk_widget().pack(side=tki.TOP, fill=tki.NONE, expand=0)
+                btn = tki.Button(window, text='Сохранить', command=selected_4)
+                btn.pack(anchor=tki.S)
                 window.after(200, None)
 
             selection = combobox_2.get()
@@ -759,7 +776,7 @@ def box_and_whiskers_chart():
         combobox_2.bind('<<ComboboxSelected>>', selected_2)
 
     window = tki.Toplevel()
-    window.title("Кластеризованная столбчатая диаграмма")
+    window.title("Категоризированная диаграмма Бокса-Вискера")
     window.geometry("500x550")
     window.resizable(False, False)
     combobox_1 = ttk.Combobox(window, values=quantitative_variables, state='readonly')
@@ -779,6 +796,10 @@ def scatter_chart():
         def selected_2(event):
             def selected_3(event):
                 def selected_4(event):
+                    def selected_5():
+                        print(4)
+                        fig.savefig('/Users/tima/desktop/to.png')
+
                     fig = Figure(figsize=(10, 4), dpi=100)
                     ax = fig.add_subplot(111)
                     x_list = data[data[combobox_3.get()] == combobox_4.get()][combobox_1.get()]
@@ -787,6 +808,8 @@ def scatter_chart():
                     canvas_1 = FigureCanvasTkAgg(fig, master=window)
                     canvas_1.draw()
                     canvas_1.get_tk_widget().pack(side=tki.TOP, fill=tki.NONE, expand=0)
+                    btn = tki.Button(window, text='Сохранить', command=selected_5)
+                    btn.pack(anchor=tki.S)
                     window.after(200, None)
 
                 selection = combobox_3.get()
@@ -805,7 +828,7 @@ def scatter_chart():
         combobox_2.bind('<<ComboboxSelected>>', selected_2)
 
     window = tki.Toplevel()
-    window.title("Кластеризованная столбчатая диаграмма")
+    window.title("Категоризированная диаграмма рассеивания")
     window.geometry("500x550")
     window.resizable(False, False)
     combobox_1 = ttk.Combobox(window, values=quantitative_variables, state='readonly')
