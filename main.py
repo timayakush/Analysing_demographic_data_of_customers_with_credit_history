@@ -1423,12 +1423,13 @@ def settings_editing():
                 Выходные данные: нет
                 Автор:
                 """
-                config = configparser.RawConfigParser()
-                config.optionxform = str
-                config.read('Analysing_demographic_data_of_customers_with_credit_history/config.ini')
-                config.set(dict_1[combobox_1.get()], 'font', combobox_3.get())
+                config = configparser.RawConfigParser()  # создание экземпляра RawConfigParser
+                config.optionxform = str  # сохранение регистра файла
+                config.read('Analysing_demographic_data_of_customers_with_credit_history/config.ini')  # чтение текущих
+                # данных
+                config.set(dict_1[combobox_1.get()], 'font', combobox_3.get())  # обновление
                 with open('config.ini', 'w') as configfile:
-                    config.write(configfile)
+                    config.write(configfile)  # перезапись файлов
 
             def selected_color(event):
                 """
@@ -1437,12 +1438,13 @@ def settings_editing():
                 Выходные данные: нет
                 Автор:
                 """
-                config = configparser.RawConfigParser()
-                config.optionxform = str
-                config.read('Analysing_demographic_data_of_customers_with_credit_history/config.ini')
+                config = configparser.RawConfigParser()  # создание экземпляра RawConfigParser
+                config.optionxform = str  # сохранение регистра файла
+                config.read('Analysing_demographic_data_of_customers_with_credit_history/config.ini')  # чтение текущих
+                # данных
                 config.set(dict_1[combobox_1.get()], 'foreground', dict_3[combobox_3.get()])
                 with open('config.ini', 'w') as configfile:
-                    config.write(configfile)
+                    config.write(configfile)  # перезапись файлов
 
             def selected_number():
                 """
@@ -1451,33 +1453,35 @@ def settings_editing():
                 Выходные данные: нет
                 Автор:
                 """
-                config = configparser.RawConfigParser()
-                config.optionxform = str
-                config.read('Analysing_demographic_data_of_customers_with_credit_history/config.ini')
+                config = configparser.RawConfigParser()  # создание экземпляра RawConfigParser
+                config.optionxform = str  # сохранение регистра файла
+                config.read('Analysing_demographic_data_of_customers_with_credit_history/config.ini')  # чтение текущих
+                # данных
                 config.set(dict_1[combobox_1.get()], dict_2[combobox_2.get()], str(spinbox.get()))
                 with open('config.ini', 'w') as configfile:
-                    config.write(configfile)
+                    config.write(configfile)  # перезапись файлов
 
-            selection_2 = combobox_2.get()
+            selection_2 = combobox_2.get()  # получение значения из выпадающего списка
             if selection_2 == 'Шрифт':
                 combobox_3 = ttk.Combobox(window, values=['TkDefaultFont', 'TkTextFont', 'TkFixedFont', 'TkMenuFont',
                                                           'TkHeadingFont', 'TkCaptionFont', 'TkSmallCaptionFont',
-                                                          'TkIconFont', 'TkTooltipFont'])
-                combobox_3.place(x=250, y=100)
-                combobox_3.bind('<<ComboboxSelected>>', selected_font)
+                                                          'TkIconFont', 'TkTooltipFont'])  # создание списка
+                combobox_3.place(x=250, y=100)  # расположение списка
+                combobox_3.bind('<<ComboboxSelected>>', selected_font)  # отслеживание статуса списка
             elif selection_2 == 'Цвет текста':
                 dict_3 = {'Чёрный': '#000000', 'Красный': '#FF0000', 'Синий': '#0000FF', 'Зелёный': '#008000',
                           'Жёлтый': '#FFFF00', 'Фиолетовый': '#8B00FF', 'Оранжевый': '#FFA500'}
                 combobox_3 = ttk.Combobox(window, values=['Чёрный', 'Красный', 'Синий', 'Зелёный', 'Жёлтый',
-                                                          'Фиолетовый', 'Оранжевый'])
-                combobox_3.place(x=250, y=100)
-                combobox_3.bind('<<ComboboxSelected>>', selected_color)
+                                                          'Фиолетовый', 'Оранжевый'])  # создание списка
+                combobox_3.place(x=250, y=100)  # расположение списка
+                combobox_3.bind('<<ComboboxSelected>>', selected_color)  # отслеживание статуса списка
             else:
-                spinbox = ttk.Spinbox(window, from_=100, to=900, state='readonly')
-                btn = ttk.Button(window, text='Сохранить', command=selected_number)
-                btn.pack(anchor=tki.S)
+                spinbox = ttk.Spinbox(window, from_=100, to=900, state='readonly')  # создание счётчика
+                spinbox.place(x=250, y=100)  # расположение счётчика
+                btn = ttk.Button(window, text='Сохранить', command=selected_number)  # создание кнопки сохранения
+                btn.pack(anchor=tki.S)  # расположение кнопки
 
-        selection_1 = combobox_1.get()
+        selection_1 = combobox_1.get()  # получение значения из выпадающего списка
         label_2 = ttk.Label(window, text='Выберите настройку, который вы хотите изменить',
                             font=(config['Settings_menu']['font'], int(config['Settings_menu']['font_size'])),
                             foreground=config['Settings_menu']['foreground'])  # создание надписи
@@ -1493,9 +1497,9 @@ def settings_editing():
                  'Цвет текста']
         else:
             a = ['Длина окна', 'Ширина окна', 'Шрифт', 'Размер шрифта', 'Цвет текста']
-        combobox_2 = ttk.Combobox(window, values=a, state='readonly')
-        combobox_2.place(x=20, y=100)
-        combobox_2.bind('<<ComboboxSelected>>', selected_2)
+        combobox_2 = ttk.Combobox(window, values=a, state='readonly')  # создание выпадающего списка
+        combobox_2.place(x=20, y=100)  # расположение списка
+        combobox_2.bind('<<ComboboxSelected>>', selected_2)  # отслеживание статуса списка
 
     window = tki.Toplevel()  # создание диалогового окна
     window.title('Настройки приложения')  # название окна
