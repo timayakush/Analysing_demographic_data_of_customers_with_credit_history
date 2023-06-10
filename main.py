@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Data analysis project v 3.1.1
+Приложение для анализа данных кредитных историй заёмщиков
 """
 import tkinter as tki
 import tkinter.ttk as ttk
@@ -82,7 +82,9 @@ def save_to_bin_file(data_local, file_name):
     Выходные данные: нет
     Автор:
     """
-    np.save(file_name, data_local)  # сохранение базы данных в бинарном файле
+    dlg = fld.SaveAs()#вызов диалогового окна сохранения
+    path = dlg.show() #путь, выбранный пользователем
+    np.save(path, data_local)  # сохранение базы данных в бинарном файле
 
 
 def save_graphics(figure):
@@ -551,7 +553,10 @@ def data_filter():
                 window1.title("Отфильтрованная база данных")  # название окна
                 window1.geometry(config['Filter_menu']['a'] + 'x' + config['Filter_menu']['b'])  # размеры окна
                 menu1 = tki.Menu(window1)  # создание меню сохранения
-                menu1.add_command(label="Сохранить", command=lambda: save_to_excel(data_filter))
+                filter_menu = tki.Menu(tearoff=0)
+                filter_menu.add_command(label="Excel файл", command=lambda: save_to_excel(data_filter))
+                filter_menu.add_command(label="Бинарный файл", command=lambda: save_to_bin_file(data_filter))
+                menu1.add_cascade(label="Сохранить", menu=filter_menu)
                 window1.config(menu=menu1)
                 tree1 = ttk.Treeview(window1, columns=report_columns,
                                      show="headings")  # создание отфильтрованной таблицы
@@ -801,7 +806,10 @@ def statistic_report():
         statistic_window1.title("Статистический отчёт")  # название окна
         statistic_window1.geometry(config['Statistic_menu']['a'] + 'x' + config['Statistic_menu']['b'])  # размеры окна
         menu1 = tki.Menu(statistic_window1)  # создание меню сохранения
-        menu1.add_command(label="Сохранить", command=lambda: save_to_excel_index(statistics))
+        statistic_menu = tki.Menu(tearoff=0)
+        statistic_menu.add_command(label="Excel файл", command=lambda: save_to_excel(statistics))
+        statistic_menu.add_command(label="Бинарный файл", command=lambda: save_to_bin_file(statistics))
+        menu1.add_cascade(label="Сохранить", menu=statistic_menu)
         statistic_window1.config(menu=menu1)
         tree1 = ttk.Treeview(statistic_window1, columns=col,
                              show="headings")  # вывод статистической таблицы в окно приложения
@@ -849,11 +857,13 @@ def statistic_report():
             statistic_window1.title("Статистический отчёт")  # название окна
             statistic_window1.geometry(
                 config['Statistic_menu']['a'] + 'x' + config['Statistic_menu']['b'])  # размеры окна
-            menu1 = tki.Menu(statistic_window1)  # создание меню сохранения
-            menu1.add_command(label="Сохранить", command=lambda: save_to_excel(statistics))
+            menu1 = tki.Menu(statistic_window1)#создание меню сохранения
+            statistic_menu = tki.Menu(tearoff=0)
+            statistic_menu.add_command(label="Excel файл", command=lambda:save_to_excel(statistics))
+            statistic_menu.add_command(label="Бинарный файл", command=lambda:save_to_bin_file(statistics))
+            menu1.add_cascade(label="Сохранить", menu=statistic_menu)
             statistic_window1.config(menu=menu1)
-            tree1 = ttk.Treeview(statistic_window1, columns=col,
-                                 show="headings")  # вывод статистической таблицы в окно приложения
+            tree1 = ttk.Treeview(statistic_window1, columns=col, show="headings") #вывод статистической таблицы в окно приложения
             for i in range(len(col)):
                 tree1.heading(col[i], text=col[i])
             for i in range(len(statistics)):
@@ -923,10 +933,13 @@ def pivot_table():
             pivot_window1 = tki.Toplevel()  # создание нового окна
             pivot_window1.title("Сводная таблица")  # название окна
             pivot_window1.geometry(config['Pivot_menu']['a'] + 'x' + config['Pivot_menu']['b'])  # размеры окна
-            menu1 = tki.Menu(pivot_window1)  # создание меню сохранения
-            menu1.add_command(label="Сохранить", command=lambda: save_to_excel_index(pivot_table))
+            menu1 = tki.Menu(pivot_window1)#создание меню сохранения
+            pivot_menu = tki.Menu(tearoff=0)
+            pivot_menu.add_command(label="Excel файл", command=lambda:save_to_excel(data_filter))
+            pivot_menu.add_command(label="Бинарный файл", command=lambda:save_to_bin_file(data_filter))
+            menu1.add_cascade(label="Сохранить", menu=pivot_menu)
             pivot_window1.config(menu=menu1)
-            tree1 = ttk.Treeview(pivot_window1, columns=col, show="headings")  # вывод сводной таблицы
+            tree1 = ttk.Treeview(pivot_window1, columns=col, show="headings")#вывод сводной таблицы
             for i in range(len(col)):
                 tree1.heading(col[i], text=col[i])
             for i in range(len(pivot_table)):
@@ -1523,8 +1536,11 @@ def interface():
     edit_menu.add_command(label="Удалить строку", command=lambda: deleting_entities(tree))
     edit_menu.add_command(label="Добавить строку", command=lambda: adding_entities(tree))
     file_menu = tki.Menu(tearoff=0)
+    save_menu = tki.Menu(tearoff=0)
+    save_menu.add_command(label='Excel файл', command=lambda: save_to_excel(data))
+    save_menu.add_command(label='Бинарный файл', command=lambda: save_to_bin_file(data))
     file_menu.add_cascade(label="Редактировать", menu=edit_menu)
-    file_menu.add_command(label="Сохранить", command=lambda: save_to_excel(data))
+    file_menu.add_cascade(label="Сохранить", menu=save_menu)
     report_menu = tki.Menu(tearoff=0)
     report_menu.add_command(label="Фильтр", command=data_filter)
     report_menu.add_command(label="Статистический отчёт", command=statistic_report)
