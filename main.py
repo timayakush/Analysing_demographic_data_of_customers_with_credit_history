@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Data analysis project v 2.8
+Data analysis project v 2.8.1
 """
 import tkinter as tki
 import tkinter.ttk as ttk
@@ -678,18 +678,18 @@ def clustered_bar_chart():
                 color = list('rbgmcyk')  # инициализация списка цветов для диаграммы
                 ax.grid()  # добавление сетки на график
                 ax.bar(x_list, y_list, color=color)  # построение диаграммы
-                canvas_1 = FigureCanvasTkAgg(fig, master=window)
-                canvas_1.draw()
-                canvas_1.get_tk_widget().pack(side=tki.TOP, fill=tki.NONE, expand=0)
+                canvas_1 = FigureCanvasTkAgg(fig, master=window)  # создание поля для двумерных изображений
+                canvas_1.draw()  # перерисовывание текущей фигуры
+                canvas_1.get_tk_widget().pack(side=tki.TOP, fill=tki.NONE, expand=0)  # расположение графика на виджете
                 btn = tki.Button(window, text='Сохранить', command=selected_4)  # создание кнопки для сохранения
                 btn.pack(anchor=tki.S)  # расположение кнопки
-                window.after(200, None)
+                window.after(200, None)  # продолжение в фоновом режиме
 
             selection = combobox_2.get()  # получение текущего выбранного значения из второго списка
             a = list(data[selection].unique())  # инициализация списка из уровней выбранной переменной
             combobox_3 = ttk.Combobox(window, values=a, state='readonly')  # создание третьего выпадающего списка
             combobox_3.place(x=250, y=60)  # расположение выпадающего списка
-            combobox_3.bind('<<ComboboxSelected>>', selected_3)  # отслеживание статуса спика
+            combobox_3.bind('<<ComboboxSelected>>', selected_3)  # отслеживание статуса списка
 
         drop = combobox_1.get()  # сохранение индекса использованной до этого переменной
         combobox_2 = ttk.Combobox(window, values=[x for x in qualitative_variables if x != drop], state='readonly')  #
@@ -749,7 +749,7 @@ def categorized_bar_chart():
                 s_dev = np.std(data[data[combobox_2.get()] == combobox_3.get()][combobox_1.get()])  # нахождение
                 # среднего отклонения
                 iqr = np.subtract(*np.percentile(data[data[combobox_2.get()] == combobox_3.get()][combobox_1.get()],
-                                                 [75, 25]))
+                                                 [75, 25]))  # нахождение межквартильного размаха
                 min_max = max(data[data[combobox_2.get()] == combobox_3.get()][combobox_1.get()]) -\
                     min(data[data[combobox_2.get()] == combobox_3.get()][combobox_1.get()])  # нахождение размаха
                 # выборки
@@ -768,12 +768,12 @@ def categorized_bar_chart():
                     ax.set_title(labels[i])  # добавление названия
                     ax.axvline(np.mean(data[data[combobox_2.get()] == combobox_3.get()][combobox_1.get()]),
                                linestyle='dashed', color='black')  # построение линии через среднее значение
-                canvas_1 = FigureCanvasTkAgg(fig, master=window)
-                canvas_1.draw()
-                canvas_1.get_tk_widget().pack(side=tki.TOP, fill=tki.NONE, expand=0)
+                canvas_1 = FigureCanvasTkAgg(fig, master=window)  # создание поля для двумерных изображений
+                canvas_1.draw()  # перерисовывание текущей фигуры
+                canvas_1.get_tk_widget().pack(side=tki.TOP, fill=tki.NONE, expand=0)  # расположение графиков на виджете
                 btn = tki.Button(window, text='Сохранить', command=selected_4)  # создание кнопки сохранения
                 btn.pack(anchor=tki.S)  # расположение кнопки
-                window.after(200, None)
+                window.after(200, None)  # продолжение в фоновом режиме
 
             selection = combobox_2.get()  # получение выбранного значения из второго списка
             a = list(data[selection].unique())  # инициализация списка из уровней выбранной переменной
@@ -835,12 +835,12 @@ def box_and_whiskers_chart():
                 ax = fig.add_subplot(111)  # создание поля для графика
                 ax.boxplot(data[data[combobox_2.get()] == combobox_3.get()][combobox_1.get()], vert=False)  # построение
                 # диаграммы
-                canvas_1 = FigureCanvasTkAgg(fig, master=window)
-                canvas_1.draw()
-                canvas_1.get_tk_widget().pack(side=tki.TOP, fill=tki.NONE, expand=0)
+                canvas_1 = FigureCanvasTkAgg(fig, master=window)  # создание поля для двумерных изображений
+                canvas_1.draw()  # перерисовывание текущей фигуры
+                canvas_1.get_tk_widget().pack(side=tki.TOP, fill=tki.NONE, expand=0)  # расположение графика на виджете
                 btn = tki.Button(window, text='Сохранить', command=selected_4)  # создание кнопки сохранения
                 btn.pack(anchor=tki.S)  # расположение кнопки
-                window.after(200, None)
+                window.after(200, None)  # продолжение в фоновом режиме
 
             selection = combobox_2.get()  # получение выбранного значения
             a = list(data[selection].unique())  # инициализация списка из уровней выбранной переменной
@@ -911,12 +911,13 @@ def scatter_chart():
                     y_list = data[data[combobox_3.get()] == combobox_4.get()][combobox_2.get()]  # создание датафрейма
                     # для второй переменной
                     ax.scatter(x_list, y_list, s=1)  # создание графика
-                    canvas_1 = FigureCanvasTkAgg(fig, master=window)
-                    canvas_1.draw()
-                    canvas_1.get_tk_widget().pack(side=tki.TOP, fill=tki.NONE, expand=0)
+                    canvas_1 = FigureCanvasTkAgg(fig, master=window)  # создание поля для двумерных изображений
+                    canvas_1.draw()  # перерисовывание текущей фигуры
+                    canvas_1.get_tk_widget().pack(side=tki.TOP, fill=tki.NONE, expand=0)  # расположение графика на
+                    # виджете
                     btn = tki.Button(window, text='Сохранить', command=selected_5)  # создание кнопки сохранения
                     btn.pack(anchor=tki.S)  # расположение кнопки
-                    window.after(200, None)
+                    window.after(200, None)  # продолжение в фоновом режиме
 
                 selection = combobox_3.get()  # получение выбранного значения
                 a = list(data[selection].unique())  # инициализация списка из уровней выбранной переменной
@@ -1017,4 +1018,4 @@ quantitative_variables = ['Customer_Age', 'Dependent_count', 'Months_on_book',
                           'Total_Amt_Chng_Q4_Q1', 'Total_Trans_Amt',
                           'Total_Trans_Ct', 'Total_Ct_Chng_Q4_Q1',
                           'Avg_Utilization_Ratio']  # список количественных переменных
-interface()
+interface()  # вызов и запуск интерфейса
