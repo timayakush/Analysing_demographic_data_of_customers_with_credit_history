@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Data analysis project v 2.9.1
+Data analysis project v 3.0
 """
 import tkinter as tki
 import tkinter.ttk as ttk
@@ -166,10 +166,12 @@ def adding_entities(tree):
     add_window.title("Добавление строки")
     add_window.geometry("350x525")
     add_window.resizable(False, False)
-    combobox = 23 * [0]
-    spinbox = 23 * [0]
+    combobox = 21 * [0]
+    spinbox = 21 * [0]
     for i in range(len(columns)):
-        add_label = tki.Label(add_window, text=columns[i])
+        add_label = tki.Label(add_window, text=columns[i],
+                              font=(config['Adding_menu']['font'], int(config['Adding_menu']['font_size'])),
+                              foreground=config['Adding_menu']['foreground'])
         add_label.grid(row=i, column=0)
     for i in range(len(columns)):
         if columns[i] in string_columns:
@@ -212,7 +214,9 @@ def deleting_entities(tree):
         check_window.title("Подтверждение")
         check_window.geometry('200x100')
         check_window.resizable(False, False)
-        label = ttk.Label(check_window, text="Удалить выделенную строку?")
+        label = ttk.Label(check_window, text="Удалить выделенную строку?",
+                          font=(config['Deleting_menu']['font'], int(config['Deleting_menu']['font_size'])),
+                          foreground=config['Deleting_menu']['foreground'])
         label.pack(anchor="c")
         button_yes = ttk.Button(check_window, text="Да", command=lambda: click_yes(check_window))
         button_yes.pack(side="left", padx=5)
@@ -323,7 +327,7 @@ def manual_modification(tree):
         Функция срабатывает при нажатии на кнопку подтверждения редактирования 
         после введения нового значения ячейки. Осуществляет модификацию 
         выбранной ячейки в базе данных и таблице Treeview
-        Входные данные: новое значение ячейкит(str), выбранный столбец(str), 
+        Входные данные: новое значение ячейки(str), выбранный столбец(str),
         номер строки, в которой происходит редактирование(int),окно 
         редактирования(tki.Toplevel)
         Выходные данные: нет
@@ -379,9 +383,13 @@ def data_filter():
         Автор:
         """
         if checkbutton_var[i].get() == 1:
-            label3 = ttk.Label(window, text="Введите значения, по которым")
+            label3 = ttk.Label(window, text="Введите значения, по которым",
+                               font=(config['Filter_menu']['font'], int(config['Filter_menu']['font_size'])),
+                               foreground=config['Filter_menu']['foreground'])
             label3.grid(row=0, column=1)
-            label4 = ttk.Label(window, text="нужно отсортировать данные")
+            label4 = ttk.Label(window, text="нужно отсортировать данные",
+                               font=(config['Filter_menu']['font'], int(config['Filter_menu']['font_size'])),
+                               foreground=config['Filter_menu']['foreground'])
             label4.grid(row=1, column=1)
             if columns[i] in string_columns:
                 characteristics = []
@@ -430,9 +438,13 @@ def data_filter():
             tki.messagebox.showwarning(title="Предупреждение",
                                        message="Не выбраны значения")
         elif flag2 == 0:
-            label1 = ttk.Label(window, text="Выберите столбцы,")
+            label1 = ttk.Label(window, text="Выберите столбцы,",
+                               font=(config['Filter_menu']['font'], int(config['Filter_menu']['font_size'])),
+                               foreground=config['Filter_menu']['foreground'])
             label1.grid(row=0, column=2)
-            label2 = ttk.Label(window, text="которые нужно оставить")
+            label2 = ttk.Label(window, text="которые нужно оставить",
+                               font=(config['Filter_menu']['font'], int(config['Filter_menu']['font_size'])),
+                               foreground=config['Filter_menu']['foreground'])
             label2.grid(row=1, column=2)
             checkbutton_var1.append(tki.IntVar())
             checkbutton1.append(ttk.Checkbutton(window, text=columns[0], variable=checkbutton_var1[0]))
@@ -556,16 +568,20 @@ def data_filter():
     window.title("Фильтр")
     window.geometry("550x575")
     window.resizable(False, False)
-    label1 = ttk.Label(window, text="Выберите столбцы, по которым")
+    label1 = ttk.Label(window, text="Выберите столбцы, по которым",
+                       font=(config['Filter_menu']['font'], int(config['Filter_menu']['font_size'])),
+                       foreground=config['Filter_menu']['foreground'])
     label1.grid(row=0, column=0)
-    label2 = ttk.Label(window, text="нужно отсортировать данные")
+    label2 = ttk.Label(window, text="нужно отсортировать данные",
+                       font=(config['Filter_menu']['font'], int(config['Filter_menu']['font_size'])),
+                       foreground=config['Filter_menu']['foreground'])
     label2.grid(row=1, column=0)
     checkbutton_var = []
     checkbutton = []
     checkbutton_var1 = []
     checkbutton1 = []
-    spinbox = 23 * [0]
-    combobox = 23 * [0]
+    spinbox = 21 * [0]
+    combobox = 21 * [0]
     checkbutton_var.append(tki.IntVar())
     checkbutton.append(
         ttk.Checkbutton(window, text=columns[0], variable=checkbutton_var[0], command=lambda: checkbutton_changed(0)))
@@ -665,14 +681,16 @@ def statistic_report():
     def click_1():
         """
         Вызывается при нажатии кнопки подтверждения выбора типа переменной, 
-        даёт возможность пользователю выбратть столбцы для создания отчёта
+        даёт возможность пользователю выбрать столбцы для создания отчёта
         Входные данные: нет
         Выходные данные: нет
         Автор:
         """
         button_1.config(state='disabled')
         if combobox_1.get() == "Качественная":
-            label2 = ttk.Label(statistic_window, text="Выберите столбец")
+            label2 = ttk.Label(statistic_window, text="Выберите столбец",
+                               font=(config['Statistic_menu']['font'], int(config['Statistic_menu']['font_size'])),
+                               foreground=config['Statistic_menu']['foreground'])
             label2.grid(row=0, column=1)
             combobox_2 = ttk.Combobox(statistic_window, values=qualitative_variables)
             combobox_2.current(0)
@@ -680,7 +698,9 @@ def statistic_report():
             button_2 = ttk.Button(statistic_window, text="Закончить выбор", command=lambda: click_2(combobox_2.get()))
             button_2.grid(row=2, column=1)
         else:
-            label2 = ttk.Label(statistic_window, text="Выберите столбцы")
+            label2 = ttk.Label(statistic_window, text="Выберите столбцы",
+                               font=(config['Statistic_menu']['font'], int(config['Statistic_menu']['font_size'])),
+                               foreground=config['Statistic_menu']['foreground'])
             label2.grid(row=0, column=1)
             checkbutton_var.append(tki.IntVar())
             checkbutton.append(
@@ -764,7 +784,7 @@ def statistic_report():
             col.append(statistics_columns[i])
         statistic_window1 = tki.Toplevel()
         statistic_window1.title("Статистический отчёт")
-        statistic_window1.geometry('600x250')
+        statistic_window1.geometry(config['Statistic_menu']['a'] + 'x' + config['Statistic_menu']['b'])
         menu1 = tki.Menu(statistic_window1)
         menu1.add_command(label="Сохранить", command=lambda: save_to_excel_index(statistics))
         statistic_window1.config(menu=menu1)
@@ -810,7 +830,7 @@ def statistic_report():
                 col.append(statistics_columns[i])
             statistic_window1 = tki.Toplevel()
             statistic_window1.title("Статистический отчёт")
-            statistic_window1.geometry('600x250')
+            statistic_window1.geometry(config['Statistic_menu']['a'] + 'x' + config['Statistic_menu']['b'])
             menu1 = tki.Menu(statistic_window1)
             menu1.add_command(label="Сохранить", command=lambda: save_to_excel(statistics))
             statistic_window1.config(menu=menu1)
@@ -826,9 +846,11 @@ def statistic_report():
 
     statistic_window = tki.Toplevel()
     statistic_window.title("Статистический отчет")
-    statistic_window.geometry("350x350")
+    statistic_window.geometry(config['Statistic_menu']['x'] + 'x' + config['Statistic_menu']['y'])
     statistic_window.resizable(False, False)
-    label1 = ttk.Label(statistic_window, text="Выберите тип переменных")
+    label1 = ttk.Label(statistic_window, text="Выберите тип переменных",
+                       font=(config['Statistic_menu']['font'], int(config['Statistic_menu']['font_size'])),
+                       foreground=config['Statistic_menu']['foreground'])
     label1.grid(row=0, column=0)
     col = ["Количественные", "Качественная"]
     combobox_1 = ttk.Combobox(statistic_window, values=col)
@@ -842,7 +864,7 @@ def statistic_report():
 
 def pivot_table():
     """
-    Создание сводной таблицы по паре выбранных качественных перменных
+    Создание сводной таблицы по паре выбранных качественных переменных
     Входные данные: нет
     Выходные данные: нет
     Автор:
@@ -850,7 +872,7 @@ def pivot_table():
 
     def click_1():
         """
-        Создание сводной таблицы по паре выбранных качественных перменных после
+        Создание сводной таблицы по паре выбранных качественных переменных после
         проверки на различие выбранных переменных, вывод таблицы в отдельное 
         окно с возможностью сохранения
         Входные данные: нет
@@ -876,7 +898,7 @@ def pivot_table():
                 col.append(pivot_columns[i])
             pivot_window1 = tki.Toplevel()
             pivot_window1.title("Сводная таблица")
-            pivot_window1.geometry('600x250')
+            pivot_window1.geometry(config['Pivot_menu']['a'] + 'x' + config['Pivot_menu']['b'])
             menu1 = tki.Menu(pivot_window1)
             menu1.add_command(label="Сохранить", command=lambda: save_to_excel_index(pivot_table))
             pivot_window1.config(menu=menu1)
@@ -899,10 +921,12 @@ def pivot_table():
 
     pivot_window = tki.Toplevel()
     pivot_window.title("Сводная таблица")
-    pivot_window.geometry("525x350")
+    pivot_window.geometry(config['Pivot_menu']['x'] + 'x' + config['Pivot_menu']['y'])
     pivot_window.resizable(False, False)
     methods = ['Сумма', 'Среднее']
-    label_1 = ttk.Label(pivot_window, text="Выберите качественные переменные")
+    label_1 = ttk.Label(pivot_window, text="Выберите качественные переменные",
+                        font=(config['Pivot_menu']['font'], int(config['Pivot_menu']['font_size'])),
+                        foreground=config['Pivot_menu']['foreground'])
     label_1.grid(row=0, column=1)
     combobox_1 = ttk.Combobox(pivot_window, values=qualitative_variables)
     combobox_1.current(0)
@@ -913,12 +937,16 @@ def pivot_table():
     combobox_3 = ttk.Combobox(pivot_window, values=qualitative_variables)
     combobox_3.current(2)
     combobox_3.grid(row=1, column=2)
-    label_2 = ttk.Label(pivot_window, text="Выберите количественную переменную")
+    label_2 = ttk.Label(pivot_window, text="Выберите количественную переменную",
+                        font=(config['Pivot_menu']['font'], int(config['Pivot_menu']['font_size'])),
+                        foreground=config['Pivot_menu']['foreground'])
     label_2.grid(row=2, column=1)
     combobox_4 = ttk.Combobox(pivot_window, values=quantitative_variables)
     combobox_4.current(0)
     combobox_4.grid(row=3, column=1)
-    label_3 = ttk.Label(pivot_window, text="Выберите метод агрегации")
+    label_3 = ttk.Label(pivot_window, text="Выберите метод агрегации",
+                        font=(config['Pivot_menu']['font'], int(config['Pivot_menu']['font_size'])),
+                        foreground=config['Pivot_menu']['foreground'])
     label_3.grid(row=4, column=1)
     combobox_5 = ttk.Combobox(pivot_window, values=methods)
     combobox_5.current(0)
@@ -1307,6 +1335,24 @@ def scatter_chart():
     combobox_1.bind('<<ComboboxSelected>>', selected_1)  # отслеживание статуса списка
 
 
+def settings_editing():
+    def selected_1(event):
+        selection = combobox_1.get()
+
+    window = tki.Toplevel()  # создание диалогового окна
+    window.title('Настройки приложения')  # название окна
+    window.geometry(config['Settings_menu']['x'] + 'x' + config['Settings_menu']['y'])  # размер окна
+    label_1 = ttk.Label(window, text='Выберите раздел настроек, который вы хотите изменить',
+                        font=(config['Settings_menu']['font'], int(config['Settings_menu']['font_size'])),
+                        foreground=config['Settings_menu']['foreground'])  # создание надписи
+    label_1.place(x=20, y=30)  # расположение надписи
+    combobox_1 = ttk.Combobox(window, values=['Основное меню', 'Графические отчёты', 'Меню добавления', 'Меню удаления',
+                                              'Меню модификации', 'Фильтр', 'Меню настроек'], state='readonly')  #
+    # создание выпадающего списка
+    combobox_1.place(x=20, y=50)  # расположение списка
+    combobox_1.bind('<<ComboboxSelected>>', selected_1)  # отслеживание статуса списка
+
+
 def interface():
     """
     Интерфейс программы
@@ -1335,9 +1381,12 @@ def interface():
     graphic_menu.add_command(label='Категоризированная гистограмма', command=categorized_bar_chart)
     graphic_menu.add_command(label='Категоризированная диаграмма Бокса-Вискера', command=box_and_whiskers_chart)
     graphic_menu.add_command(label='Категоризированная диаграмма рассеивания', command=scatter_chart)
+    settings_menu = tki.Menu(tearoff=0)
+    settings_menu.add_command(label='Настройки', command=settings_editing)
     menu.add_cascade(label="Файл", menu=file_menu)
     menu.add_cascade(label="Текстовые отчёты", menu=report_menu)
     menu.add_cascade(label="Графические отчёты", menu=graphic_menu)
+    menu.add_cascade(label='Настройки', menu=settings_menu)
     root.config(menu=menu)
     tree = ttk.Treeview(columns=columns, show="headings", height=int(config['Main_menu']['tree_height']))
     for i in range(len(columns)):
