@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Data analysis project v 2.9
+Data analysis project v 2.9.1
 """
 import tkinter as tki
 import tkinter.ttk as ttk
@@ -861,7 +861,8 @@ def pivot_table():
             method = 'count'
         else:
             method = 'mean'
-        if combobox_1.get() == combobox_2.get() or combobox_1.get() == combobox_3.get() or combobox_2.get() == combobox_3.get():
+        if combobox_1.get() == combobox_2.get() or combobox_1.get() == combobox_3.get() or combobox_2.get() == \
+                combobox_3.get():
             tki.messagebox.showwarning(title="Предупреждение", message="Были выбраны одинаковые значения")
         else:
             pivot_table = pd.pivot_table(data, index=[combobox_1.get(), combobox_2.get()], columns=combobox_3.get(),
@@ -984,8 +985,8 @@ def clustered_bar_chart():
 
             label_3 = ttk.Label(window, text='Выберите значение второй переменной',
                                 font=(config['Graphic_menu']['font'], int(config['Graphic_menu']['font_size'])),
-                                foreground=config['Graphic_menu']['foreground'])
-            label_3.place(x=20, y=110)
+                                foreground=config['Graphic_menu']['foreground'])  # создание надписи
+            label_3.place(x=20, y=110)  # расположение надписи
             selection = combobox_2.get()  # получение текущего выбранного значения из второго списка
             a = list(data[selection].unique())  # инициализация списка из уровней выбранной переменной
             combobox_3 = ttk.Combobox(window, values=a, state='readonly')  # создание третьего выпадающего списка
@@ -994,8 +995,8 @@ def clustered_bar_chart():
 
         label_2 = ttk.Label(window, text='Выберите 2-ю качественную переменную',
                             font=(config['Graphic_menu']['font'], int(config['Graphic_menu']['font_size'])),
-                            foreground=config['Graphic_menu']['foreground'])
-        label_2.place(x=20, y=70)
+                            foreground=config['Graphic_menu']['foreground'])  # создание надписи
+        label_2.place(x=20, y=70)  # расположение надписи
         drop = combobox_1.get()  # сохранение индекса использованной до этого переменной
         combobox_2 = ttk.Combobox(window, values=[x for x in qualitative_variables if x != drop], state='readonly')  #
         # создание второго выпадающего списка из оставшихся переменных
@@ -1007,8 +1008,8 @@ def clustered_bar_chart():
     window.geometry(config['Graphic_menu']['x'] + 'x' + config['Graphic_menu']['y'])  # размер окна
     label_1 = ttk.Label(window, text='Выберите 1-ю качественную переменную',
                         font=(config['Graphic_menu']['font'], int(config['Graphic_menu']['font_size'])),
-                        foreground=config['Graphic_menu']['foreground'])
-    label_1.place(x=20, y=30)
+                        foreground=config['Graphic_menu']['foreground'])  # создание надписи
+    label_1.place(x=20, y=30)  # расположение надписи
     combobox_1 = ttk.Combobox(window, values=qualitative_variables, state='readonly')  # создание первого выпадающего
     # списка
     combobox_1.place(x=20, y=50)  # расположение выпадающего списка
@@ -1064,7 +1065,7 @@ def categorized_bar_chart():
                 iqr = np.subtract(*np.percentile(data[data[combobox_2.get()] == combobox_3.get()][combobox_1.get()],
                                                  [75, 25]))  # нахождение межквартильного размаха
                 min_max = max(data[data[combobox_2.get()] == combobox_3.get()][combobox_1.get()]) - \
-                          min(data[data[combobox_2.get()] == combobox_3.get()][combobox_1.get()])  # нахождение размаха
+                    min(data[data[combobox_2.get()] == combobox_3.get()][combobox_1.get()])  # нахождение размаха
                 # выборки
                 sturges = 1 + 3.322 * np.log10(column_size)  # Sturges' formula
                 scott = min_max * np.power(column_size, 1 / 3) / (3.5 * s_dev)  # Scott's rule
@@ -1090,8 +1091,8 @@ def categorized_bar_chart():
 
             label_3 = ttk.Label(window, text='Выберите значение качественной переменной',
                                 font=(config['Graphic_menu']['font'], int(config['Graphic_menu']['font_size'])),
-                                foreground=config['Graphic_menu']['foreground'])
-            label_3.place(x=20, y=110)
+                                foreground=config['Graphic_menu']['foreground'])  # создание надписи
+            label_3.place(x=20, y=110)  # расположение надписи
             selection = combobox_2.get()  # получение выбранного значения из второго списка
             a = list(data[selection].unique())  # инициализация списка из уровней выбранной переменной
             combobox_3 = ttk.Combobox(window, values=a, state='readonly')  # создание третьего выпадающего списка
@@ -1100,8 +1101,8 @@ def categorized_bar_chart():
 
         label_2 = ttk.Label(window, text='Выберите качественную переменную',
                             font=(config['Graphic_menu']['font'], int(config['Graphic_menu']['font_size'])),
-                            foreground=config['Graphic_menu']['foreground'])
-        label_2.place(x=20, y=70)
+                            foreground=config['Graphic_menu']['foreground'])  # создание надписи
+        label_2.place(x=20, y=70)  # расположение надписи
         combobox_2 = ttk.Combobox(window, values=qualitative_variables, state='readonly')  # создание второго списка
         combobox_2.place(x=20, y=90)  # расположение списка
         combobox_2.bind('<<ComboboxSelected>>', selected_2)  # отслеживание статуса списка
@@ -1111,8 +1112,8 @@ def categorized_bar_chart():
     window.geometry(config['Graphic_menu']['x'] + 'x' + config['Graphic_menu']['y'])  # размер окна
     label_1 = ttk.Label(window, text='Выберите количественную переменную',
                         font=(config['Graphic_menu']['font'], int(config['Graphic_menu']['font_size'])),
-                        foreground=config['Graphic_menu']['foreground'])
-    label_1.place(x=20, y=30)
+                        foreground=config['Graphic_menu']['foreground'])  # создание надписи
+    label_1.place(x=20, y=30)  # расположение надписи
     combobox_1 = ttk.Combobox(window, values=quantitative_variables, state='readonly')  # создание первого выпадающего
     # списка
     combobox_1.place(x=20, y=50)  # расположение списка
@@ -1173,8 +1174,8 @@ def box_and_whiskers_chart():
 
             label_3 = ttk.Label(window, text='Выберите значение качественной переменной',
                                 font=(config['Graphic_menu']['font'], int(config['Graphic_menu']['font_size'])),
-                                foreground=config['Graphic_menu']['foreground'])
-            label_3.place(x=20, y=110)
+                                foreground=config['Graphic_menu']['foreground'])  # создание надписи
+            label_3.place(x=20, y=110)  # расположение надписи
             selection = combobox_2.get()  # получение выбранного значения
             a = list(data[selection].unique())  # инициализация списка из уровней выбранной переменной
             combobox_3 = ttk.Combobox(window, values=a, state='readonly')  # создание выпадающего списка
@@ -1183,8 +1184,8 @@ def box_and_whiskers_chart():
 
         label_2 = ttk.Label(window, text='Выберите качественную переменную',
                             font=(config['Graphic_menu']['font'], int(config['Graphic_menu']['font_size'])),
-                            foreground=config['Graphic_menu']['foreground'])
-        label_2.place(x=20, y=70)
+                            foreground=config['Graphic_menu']['foreground'])  # создание надписи
+        label_2.place(x=20, y=70)  # расположение надписи
         combobox_2 = ttk.Combobox(window, values=qualitative_variables, state='readonly')  # создание выпадающего списка
         combobox_2.place(x=20, y=90)  # расположение списка
         combobox_2.bind('<<ComboboxSelected>>', selected_2)  # отслеживание списка
@@ -1194,8 +1195,8 @@ def box_and_whiskers_chart():
     window.geometry(config['Graphic_menu']['x'] + 'x' + config['Graphic_menu']['y'])  # размер окна
     label_1 = ttk.Label(window, text='Выберите количественную переменную',
                         font=(config['Graphic_menu']['font'], int(config['Graphic_menu']['font_size'])),
-                        foreground=config['Graphic_menu']['foreground'])
-    label_1.place(x=20, y=30)
+                        foreground=config['Graphic_menu']['foreground'])  # создание надписи
+    label_1.place(x=20, y=30)  # расположение надписи
     combobox_1 = ttk.Combobox(window, values=quantitative_variables, state='readonly')  # создание выпадающего списка
     combobox_1.place(x=20, y=50)  # расположение списка
     combobox_1.bind('<<ComboboxSelected>>', selected_1)  # отслеживание статуса списка
@@ -1267,8 +1268,8 @@ def scatter_chart():
 
                 label_4 = ttk.Label(window, text='Выберите значение качественной переменной',
                                     font=(config['Graphic_menu']['font'], int(config['Graphic_menu']['font_size'])),
-                                    foreground=config['Graphic_menu']['foreground'])
-                label_4.place(x=20, y=150)
+                                    foreground=config['Graphic_menu']['foreground'])  # создание надписи
+                label_4.place(x=20, y=150)  # расположение надписи
                 selection = combobox_3.get()  # получение выбранного значения
                 a = list(data[selection].unique())  # инициализация списка из уровней выбранной переменной
                 combobox_4 = ttk.Combobox(window, values=a, state='readonly')  # создание выпадающего списка
@@ -1277,8 +1278,8 @@ def scatter_chart():
 
             label_3 = ttk.Label(window, text='Выберите качественную переменную',
                                 font=(config['Graphic_menu']['font'], int(config['Graphic_menu']['font_size'])),
-                                foreground=config['Graphic_menu']['foreground'])
-            label_3.place(x=20, y=110)
+                                foreground=config['Graphic_menu']['foreground'])  # создание надписи
+            label_3.place(x=20, y=110)  # расположение надписи
             combobox_3 = ttk.Combobox(window, values=qualitative_variables, state='readonly')  # создание выпадающего
             # списка
             combobox_3.place(x=20, y=130)  # расположение списка
@@ -1286,8 +1287,8 @@ def scatter_chart():
 
         label_2 = ttk.Label(window, text='Выберите 2-ю количественную переменную',
                             font=(config['Graphic_menu']['font'], int(config['Graphic_menu']['font_size'])),
-                            foreground=config['Graphic_menu']['foreground'])
-        label_2.place(x=20, y=70)
+                            foreground=config['Graphic_menu']['foreground'])  # создание надписи
+        label_2.place(x=20, y=70)  # расположение надписи
         drop = combobox_1.get()  # сохранения индекса выбранной переменной
         combobox_2 = ttk.Combobox(window, values=[x for x in quantitative_variables if x != drop], state='readonly')  #
         # создание выпадающего списка
@@ -1299,8 +1300,8 @@ def scatter_chart():
     window.geometry(config['Graphic_menu']['x'] + 'x' + config['Graphic_menu']['y'])  # размер окна
     label_1 = ttk.Label(window, text='Выберите 1-ю количественную переменную',
                         font=(config['Graphic_menu']['font'], int(config['Graphic_menu']['font_size'])),
-                        foreground=config['Graphic_menu']['foreground'])
-    label_1.place(x=20, y=30)
+                        foreground=config['Graphic_menu']['foreground'])  # создание надписи
+    label_1.place(x=20, y=30)  # расположение надписи
     combobox_1 = ttk.Combobox(window, values=quantitative_variables, state='readonly')  # создание выпадающего списка
     combobox_1.place(x=20, y=50)  # расположение списка
     combobox_1.bind('<<ComboboxSelected>>', selected_1)  # отслеживание статуса списка
