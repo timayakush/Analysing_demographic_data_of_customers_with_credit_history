@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Data analysis project v 3.0
+Data analysis project v 3.1
 """
 import tkinter as tki
 import tkinter.ttk as ttk
@@ -162,6 +162,9 @@ def adding_entities(tree):
             tki.messagebox.showerror(title="Ошибка",
                                      message="Была введена качественная переменная для количественного столбца")
 
+    config = configparser.ConfigParser()  # создание экземпляра ConfigParser
+    config.read(
+        'Analysing_demographic_data_of_customers_with_credit_history/config.ini')  # чтение конфигурационного файла
     add_window = tki.Toplevel()
     add_window.title("Добавление строки")
     add_window.geometry("350x525")
@@ -258,6 +261,9 @@ def deleting_entities(tree):
         check_window.destroy()
         tree.bind('<<TreeviewSelect>>', plug)
 
+    config = configparser.ConfigParser()  # создание экземпляра ConfigParser
+    config.read(
+        'Analysing_demographic_data_of_customers_with_credit_history/config.ini')  # чтение конфигурационного файла
     tki.messagebox.showinfo(title="Информация", message="Выберите строку для удаления")
     tree.bind('<<TreeviewSelect>>', del_select)
 
@@ -363,6 +369,9 @@ def manual_modification(tree):
                     values.append(data.iloc[i, j])
                 tree.insert("", tki.END, values=values, iid=i)
 
+    config = configparser.ConfigParser()  # создание экземпляра ConfigParser
+    config.read(
+        'Analysing_demographic_data_of_customers_with_credit_history/config.ini')  # чтение конфигурационного файла
     tki.messagebox.showinfo(title="Информация", message="Выберите строку для редактирования")
     tree.bind('<<TreeviewSelect>>', edit_select)
 
@@ -564,6 +573,9 @@ def data_filter():
         else:
             tki.messagebox.showwarning(title="Предупреждение", message="Не выбраны значения")
 
+    config = configparser.ConfigParser()  # создание экземпляра ConfigParser
+    config.read(
+        'Analysing_demographic_data_of_customers_with_credit_history/config.ini')  # чтение конфигурационного файла
     window = tki.Toplevel()
     window.title("Фильтр")
     window.geometry("550x575")
@@ -844,6 +856,9 @@ def statistic_report():
                 tree1.insert("", tki.END, values=values)
             tree1.pack(fill="both", expand=1)
 
+    config = configparser.ConfigParser()  # создание экземпляра ConfigParser
+    config.read(
+        'Analysing_demographic_data_of_customers_with_credit_history/config.ini')  # чтение конфигурационного файла
     statistic_window = tki.Toplevel()
     statistic_window.title("Статистический отчет")
     statistic_window.geometry(config['Statistic_menu']['x'] + 'x' + config['Statistic_menu']['y'])
@@ -919,6 +934,9 @@ def pivot_table():
             pivot_window.grab_release()
             pivot_window.destroy()
 
+    config = configparser.ConfigParser()  # создание экземпляра ConfigParser
+    config.read(
+        'Analysing_demographic_data_of_customers_with_credit_history/config.ini')  # чтение конфигурационного файла
     pivot_window = tki.Toplevel()
     pivot_window.title("Сводная таблица")
     pivot_window.geometry(config['Pivot_menu']['x'] + 'x' + config['Pivot_menu']['y'])
@@ -1031,6 +1049,9 @@ def clustered_bar_chart():
         combobox_2.place(x=20, y=90)  # расположение выпадающего списка
         combobox_2.bind('<<ComboboxSelected>>', selected_2)  # отслеживание статуса списка
 
+    config = configparser.ConfigParser()  # создание экземпляра ConfigParser
+    config.read(
+        'Analysing_demographic_data_of_customers_with_credit_history/config.ini')  # чтение конфигурационного файла
     window = tki.Toplevel()  # открывает новое диалоговое окно
     window.title("Кластеризованная столбчатая диаграмма")  # название окна
     window.geometry(config['Graphic_menu']['x'] + 'x' + config['Graphic_menu']['y'])  # размер окна
@@ -1135,6 +1156,9 @@ def categorized_bar_chart():
         combobox_2.place(x=20, y=90)  # расположение списка
         combobox_2.bind('<<ComboboxSelected>>', selected_2)  # отслеживание статуса списка
 
+    config = configparser.ConfigParser()  # создание экземпляра ConfigParser
+    config.read(
+        'Analysing_demographic_data_of_customers_with_credit_history/config.ini')  # чтение конфигурационного файла
     window = tki.Toplevel()  # создание диалогового окна
     window.title("Категоризированная гистограмма")  # название окна
     window.geometry(config['Graphic_menu']['x'] + 'x' + config['Graphic_menu']['y'])  # размер окна
@@ -1218,6 +1242,9 @@ def box_and_whiskers_chart():
         combobox_2.place(x=20, y=90)  # расположение списка
         combobox_2.bind('<<ComboboxSelected>>', selected_2)  # отслеживание списка
 
+    config = configparser.ConfigParser()  # создание экземпляра ConfigParser
+    config.read(
+        'Analysing_demographic_data_of_customers_with_credit_history/config.ini')  # чтение конфигурационного файла
     window = tki.Toplevel()  # создание диалогового окна
     window.title("Категоризированная диаграмма Бокса-Вискера")  # название окна
     window.geometry(config['Graphic_menu']['x'] + 'x' + config['Graphic_menu']['y'])  # размер окна
@@ -1231,6 +1258,7 @@ def box_and_whiskers_chart():
 
 
 def scatter_chart():
+
     """
     Создание категоризированной диаграммы рассеивания для пары количественных переменных и одной качественной переменной
     Входные данные: нет
@@ -1323,6 +1351,9 @@ def scatter_chart():
         combobox_2.place(x=20, y=90)  # расположение списка
         combobox_2.bind('<<ComboboxSelected>>', selected_2)  # отслеживание статуса списка
 
+    config = configparser.ConfigParser()  # создание экземпляра ConfigParser
+    config.read(
+        'Analysing_demographic_data_of_customers_with_credit_history/config.ini')  # чтение конфигурационного файла
     window = tki.Toplevel()  # создание диалогового окна
     window.title("Категоризированная диаграмма рассеивания")  # название окна
     window.geometry(config['Graphic_menu']['x'] + 'x' + config['Graphic_menu']['y'])  # размер окна
@@ -1336,8 +1367,110 @@ def scatter_chart():
 
 
 def settings_editing():
+    """
+    Пользовательская настройка интерфейса
+    Входные данные: нет
+    Выходные данные: нет
+    Автор:
+    """
+    config = configparser.ConfigParser()  # создание экземпляра ConfigParser
+    config.read(
+        'Analysing_demographic_data_of_customers_with_credit_history/config.ini')  # чтение конфигурационного файла
+
     def selected_1(event):
-        selection = combobox_1.get()
+        """
+        Создание списка доступных для изменения настроек
+        Входные данные: нет
+        Выходные данные: нет
+        Автор:
+        """
+        def selected_2(event):
+            """
+            Создание списка доступных значений для изменения настройки
+            Входные данные: нет
+            Выходные данные: нет
+            Автор:
+            """
+            def selected_font(event):
+                """
+                Изменение шрифта
+                Входные данные: нет
+                Выходные данные: нет
+                Автор:
+                """
+                config = configparser.RawConfigParser()
+                config.optionxform = str
+                config.read('Analysing_demographic_data_of_customers_with_credit_history/config.ini')
+                config.set(dict_1[combobox_1.get()], 'font', combobox_3.get())
+                with open('Analysing_demographic_data_of_customers_with_credit_history/config.ini', 'w') as configfile:
+                    config.write(configfile)
+
+            def selected_color(event):
+                """
+                Изменение цвета
+                Входные данные: нет
+                Выходные данные: нет
+                Автор:
+                """
+                config = configparser.RawConfigParser()
+                config.optionxform = str
+                config.read('Analysing_demographic_data_of_customers_with_credit_history/config.ini')
+                config.set(dict_1[combobox_1.get()], 'foreground', dict_3[combobox_3.get()])
+                with open('Analysing_demographic_data_of_customers_with_credit_history/config.ini', 'w') as configfile:
+                    config.write(configfile)
+
+            def selected_number():
+                """
+                Изменение размера окон
+                Входные данные: нет
+                Выходные данные: нет
+                Автор:
+                """
+                config = configparser.RawConfigParser()
+                config.optionxform = str
+                config.read('Analysing_demographic_data_of_customers_with_credit_history/config.ini')
+                config.set(dict_1[combobox_1.get()], dict_2[combobox_2.get()], str(spinbox.get()))
+                with open('Analysing_demographic_data_of_customers_with_credit_history/config.ini', 'w') as configfile:
+                    config.write(configfile)
+
+            selection_2 = combobox_2.get()
+            if selection_2 == 'Шрифт':
+                combobox_3 = ttk.Combobox(window, values=['TkDefaultFont', 'TkTextFont', 'TkFixedFont', 'TkMenuFont',
+                                                          'TkHeadingFont', 'TkCaptionFont', 'TkSmallCaptionFont',
+                                                          'TkIconFont', 'TkTooltipFont'])
+                combobox_3.place(x=250, y=100)
+                combobox_3.bind('<<ComboboxSelected>>', selected_font)
+            elif selection_2 == 'Цвет текста':
+                dict_3 = {'Чёрный': '#000000', 'Красный': '#FF0000', 'Синий': '#0000FF', 'Зелёный': '#008000',
+                          'Жёлтый': '#FFFF00', 'Фиолетовый': '#8B00FF', 'Оранжевый': '#FFA500'}
+                combobox_3 = ttk.Combobox(window, values=['Чёрный', 'Красный', 'Синий', 'Зелёный', 'Жёлтый',
+                                                          'Фиолетовый', 'Оранжевый'])
+                combobox_3.place(x=250, y=100)
+                combobox_3.bind('<<ComboboxSelected>>', selected_color)
+            else:
+                spinbox = ttk.Spinbox(window, from_=100, to=900, state='readonly')
+                btn = ttk.Button(window, text='Сохранить', command=selected_number)
+                btn.pack(anchor=tki.S)
+
+        selection_1 = combobox_1.get()
+        label_2 = ttk.Label(window, text='Выберите настройку, который вы хотите изменить',
+                            font=(config['Settings_menu']['font'], int(config['Settings_menu']['font_size'])),
+                            foreground=config['Settings_menu']['foreground'])  # создание надписи
+        label_2.place(x=20, y=70)  # расположение надписи
+        dict_2 = {'Длина окна': 'x', 'Ширина окна': 'y', 'Минимальная длина': 'x_min', 'Минимальная ширина': 'y_min',
+                  'Размер шрифта': 'font_size', 'Длина доп. окна': 'a', 'Ширина доп. окна': 'b'}
+        if selection_1 == 'Основное меню':
+            a = ['Длина окна', 'Ширина окна', 'Минимальная длина', 'Минимальная ширина']
+        elif selection_1 == 'Меню модификации':
+            a = ['Длина окна', 'Ширина окна']
+        elif selection_1 in ('Статистический отчёт', 'Сводная таблица'):
+            a = ['Длина окна', 'Ширина окна', 'Длина доп. окна', 'Ширина доп. окна', 'Шрифт', 'Размер шрифта',
+                 'Цвет текста']
+        else:
+            a = ['Длина окна', 'Ширина окна', 'Шрифт', 'Размер шрифта', 'Цвет текста']
+        combobox_2 = ttk.Combobox(window, values=a, state='readonly')
+        combobox_2.place(x=20, y=100)
+        combobox_2.bind('<<ComboboxSelected>>', selected_2)
 
     window = tki.Toplevel()  # создание диалогового окна
     window.title('Настройки приложения')  # название окна
@@ -1346,8 +1479,13 @@ def settings_editing():
                         font=(config['Settings_menu']['font'], int(config['Settings_menu']['font_size'])),
                         foreground=config['Settings_menu']['foreground'])  # создание надписи
     label_1.place(x=20, y=30)  # расположение надписи
+    dict_1 = {'Основное меню': 'Main_menu', 'Графические отчёты': 'Graphic_menu', 'Меню добавления': 'Adding_menu',
+              'Меню удаления': 'Deleting_menu', 'Меню модификации': 'Modification_menu', 'Фильтр': 'Filter_menu',
+              'Статистический отчёт': 'Statistic_menu', 'Сводная таблица': 'Pivot_menu',
+              'Меню настроек': 'Settings_menu'}
     combobox_1 = ttk.Combobox(window, values=['Основное меню', 'Графические отчёты', 'Меню добавления', 'Меню удаления',
-                                              'Меню модификации', 'Фильтр', 'Меню настроек'], state='readonly')  #
+                                              'Меню модификации', 'Фильтр', 'Статистический отчёт', 'Сводная таблица',
+                                              'Меню настроек'], state='readonly')  #
     # создание выпадающего списка
     combobox_1.place(x=20, y=50)  # расположение списка
     combobox_1.bind('<<ComboboxSelected>>', selected_1)  # отслеживание статуса списка
@@ -1360,6 +1498,9 @@ def interface():
     Выходные данные: нет
     Автор:
     """
+    config = configparser.ConfigParser()  # создание экземпляра ConfigParser
+    config.read(
+        'Analysing_demographic_data_of_customers_with_credit_history/config.ini')  # чтение конфигурационного файла
     root = tki.Tk()
     root.title('Приложение для анализа данных кредитных историй заёмщиков')
     root.geometry(config['Main_menu']['x'] + 'x' + config['Main_menu']['y'])
@@ -1388,7 +1529,7 @@ def interface():
     menu.add_cascade(label="Графические отчёты", menu=graphic_menu)
     menu.add_cascade(label='Настройки', menu=settings_menu)
     root.config(menu=menu)
-    tree = ttk.Treeview(columns=columns, show="headings", height=int(config['Main_menu']['tree_height']))
+    tree = ttk.Treeview(columns=columns, show="headings", height=500)
     for i in range(len(columns)):
         tree.heading(columns[i], text=columns[i])
     for i in range(len(data)):
@@ -1406,8 +1547,6 @@ def interface():
     root.mainloop()
 
 
-config = configparser.ConfigParser()  # создание экземпляра ConfigParser
-config.read('Analysing_demographic_data_of_customers_with_credit_history/config.ini')  # чтение конфигурационного файла
 file = 'Analysing_demographic_data_of_customers_with_credit_history/Base_edited.xlsx'  # файл с исходной базой данных
 data = read_from_text_file(file)  # чтение файла
 data_columns = data.columns  # создание списка из столбцов
