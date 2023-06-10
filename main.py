@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Data analysis project v 3.1
+Data analysis project v 3.1.1
 """
 import tkinter as tki
 import tkinter.ttk as ttk
@@ -85,14 +85,17 @@ def save_to_bin_file(data_local, file_name):
     np.save(file_name, data_local)  # сохранение базы данных в бинарном файле
 
 
-def save_graphics(file_name):
+def save_graphics(figure):
     """
     Функция сохраняет построенный график в файл .png
     Входные данные: имя файла (строка)
     Выходные данные: нет
     Автор:
     """
-    plt.savefig(file_name)  # сохранение графика в формате .png
+    ftypes = [('.png файлы', '*.png')]  # в диалоговом окне могут отображаться только файлы .png
+    dlg = fld.SaveAs(filetypes=ftypes)  # вызов диалогового окна сохранения
+    path = dlg.show() + '.png'  # путь, выбранный пользователем
+    figure.savefig(path)  # сохранение графика в формате .png
 
 
 def isNumeric(s):
@@ -1020,7 +1023,7 @@ def clustered_bar_chart():
                     Выходные данные: нет
                     Автор:
                     """
-                    fig.savefig('/Users/tima/desktop/to.png')  # сохранение в формате .png
+                    save_graphics(fig)  # сохранение в формате .png
 
                 fig = Figure(figsize=(15, 7), dpi=100)  # создание экземпляра Figure для графиков
                 ax = fig.add_subplot(111)  # создание поля для графика
@@ -1112,7 +1115,7 @@ def categorized_bar_chart():
                     Выходные данные: нет
                     Автор:
                     """
-                    fig.savefig('/Users/tima/desktop/to.png')  # сохранение в формате .png
+                    save_graphics(fig)  # сохранение в формате .png
 
                 fig = Figure(figsize=(15, 7), dpi=100)  # создание экземпляра Figure для графиков
                 column_size = len(data[data[combobox_2.get()] == combobox_3.get()][combobox_1.get()])  # нахождение
@@ -1219,7 +1222,7 @@ def box_and_whiskers_chart():
                     Выходные данные: нет
                     Автор:
                     """
-                    fig.savefig('/Users/tima/desktop/to.png')  # сохранение в формате .png
+                    save_graphics(fig)  # сохранение в формате .png
 
                 fig = Figure(figsize=(15, 7), dpi=100)  # создание экземпляра Figure для графиков
                 ax = fig.add_subplot(111)  # создание поля для графика
@@ -1312,7 +1315,7 @@ def scatter_chart():
                         Выходные данные: нет
                         Автор:
                         """
-                        fig.savefig('/Users/tima/desktop/to.png')  # сохранение в формате .png
+                        save_graphics(fig)  # сохранение в формате .png
 
                     fig = Figure(figsize=(15, 7), dpi=100)  # создание экземпляра Figure для графиков
                     ax = fig.add_subplot(111)  # создание поля для графика
@@ -1556,7 +1559,7 @@ def interface():
     root.mainloop()
 
 
-file = 'Base_edited.xlsx'  # файл с исходной базой данных
+file = 'Analysing_demographic_data_of_customers_with_credit_history/Base_edited.xlsx'  # файл с исходной базой данных
 data = read_from_text_file(file)  # чтение файла
 data_columns = data.columns  # получение названий столбцов базы данных
 columns = []
