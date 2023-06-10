@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Data analysis project v 2.8.1
+Data analysis project v 2.8.2
 """
 import tkinter as tki
 import tkinter.ttk as ttk
@@ -685,24 +685,36 @@ def clustered_bar_chart():
                 btn.pack(anchor=tki.S)  # расположение кнопки
                 window.after(200, None)  # продолжение в фоновом режиме
 
+            label_3 = ttk.Label(window, text='Выберите значение второй переменной',
+                                font=(config['Graphic_menu']['font'], int(config['Graphic_menu']['font_size'])),
+                                foreground=config['Graphic_menu']['foreground'])
+            label_3.place(x=20, y=110)
             selection = combobox_2.get()  # получение текущего выбранного значения из второго списка
             a = list(data[selection].unique())  # инициализация списка из уровней выбранной переменной
             combobox_3 = ttk.Combobox(window, values=a, state='readonly')  # создание третьего выпадающего списка
-            combobox_3.place(x=250, y=60)  # расположение выпадающего списка
+            combobox_3.place(x=20, y=130)  # расположение выпадающего списка
             combobox_3.bind('<<ComboboxSelected>>', selected_3)  # отслеживание статуса списка
 
+        label_2 = ttk.Label(window, text='Выберите 2-ю качественную переменную',
+                            font=(config['Graphic_menu']['font'], int(config['Graphic_menu']['font_size'])),
+                            foreground=config['Graphic_menu']['foreground'])
+        label_2.place(x=20, y=70)
         drop = combobox_1.get()  # сохранение индекса использованной до этого переменной
         combobox_2 = ttk.Combobox(window, values=[x for x in qualitative_variables if x != drop], state='readonly')  #
         # создание второго выпадающего списка из оставшихся переменных
-        combobox_2.place(x=20, y=60)  # расположение выпадающего списка
+        combobox_2.place(x=20, y=90)  # расположение выпадающего списка
         combobox_2.bind('<<ComboboxSelected>>', selected_2)  # отслеживание статуса списка
 
     window = tki.Toplevel()  # открывает новое диалоговое окно
     window.title("Кластеризованная столбчатая диаграмма")  # название окна
     window.geometry(config['Graphic_menu']['x'] + 'x' + config['Graphic_menu']['y'])  # размер окна
+    label_1 = ttk.Label(window, text='Выберите 1-ю качественную переменную',
+                        font=(config['Graphic_menu']['font'], int(config['Graphic_menu']['font_size'])),
+                        foreground=config['Graphic_menu']['foreground'])
+    label_1.place(x=20, y=30)
     combobox_1 = ttk.Combobox(window, values=qualitative_variables, state='readonly')  # создание первого выпадающего
     # списка
-    combobox_1.place(x=20, y=30)  # расположение выпадающего списка
+    combobox_1.place(x=20, y=50)  # расположение выпадающего списка
     combobox_1.bind('<<ComboboxSelected>>', selected_1)  # отслеживание статуса списка
 
 
@@ -775,22 +787,34 @@ def categorized_bar_chart():
                 btn.pack(anchor=tki.S)  # расположение кнопки
                 window.after(200, None)  # продолжение в фоновом режиме
 
+            label_3 = ttk.Label(window, text='Выберите значение качественной переменной',
+                                font=(config['Graphic_menu']['font'], int(config['Graphic_menu']['font_size'])),
+                                foreground=config['Graphic_menu']['foreground'])
+            label_3.place(x=20, y=110)
             selection = combobox_2.get()  # получение выбранного значения из второго списка
             a = list(data[selection].unique())  # инициализация списка из уровней выбранной переменной
             combobox_3 = ttk.Combobox(window, values=a, state='readonly')  # создание третьего выпадающего списка
-            combobox_3.place(x=250, y=60)  # расположение списка
+            combobox_3.place(x=20, y=130)  # расположение списка
             combobox_3.bind('<<ComboboxSelected>>', selected_3)  # отслеживание статуса списка
 
+        label_2 = ttk.Label(window, text='Выберите качественную переменную',
+                            font=(config['Graphic_menu']['font'], int(config['Graphic_menu']['font_size'])),
+                            foreground=config['Graphic_menu']['foreground'])
+        label_2.place(x=20, y=70)
         combobox_2 = ttk.Combobox(window, values=qualitative_variables, state='readonly')  # создание второго списка
-        combobox_2.place(x=20, y=60)  # расположение списка
+        combobox_2.place(x=20, y=90)  # расположение списка
         combobox_2.bind('<<ComboboxSelected>>', selected_2)  # отслеживание статуса списка
 
     window = tki.Toplevel()  # создание диалогового окна
     window.title("Категоризированная гистограмма")  # название окна
     window.geometry(config['Graphic_menu']['x'] + 'x' + config['Graphic_menu']['y'])  # размер окна
+    label_1 = ttk.Label(window, text='Выберите количественную переменную',
+                        font=(config['Graphic_menu']['font'], int(config['Graphic_menu']['font_size'])),
+                        foreground=config['Graphic_menu']['foreground'])
+    label_1.place(x=20, y=30)
     combobox_1 = ttk.Combobox(window, values=quantitative_variables, state='readonly')  # создание первого выпадающего
     # списка
-    combobox_1.place(x=20, y=30)  # расположение списка
+    combobox_1.place(x=20, y=50)  # расположение списка
     combobox_1.bind('<<ComboboxSelected>>', selected_1)  # отслеживание статуса списка
 
 
@@ -842,21 +866,33 @@ def box_and_whiskers_chart():
                 btn.pack(anchor=tki.S)  # расположение кнопки
                 window.after(200, None)  # продолжение в фоновом режиме
 
+            label_3 = ttk.Label(window, text='Выберите значение качественной переменной',
+                                font=(config['Graphic_menu']['font'], int(config['Graphic_menu']['font_size'])),
+                                foreground=config['Graphic_menu']['foreground'])
+            label_3.place(x=20, y=110)
             selection = combobox_2.get()  # получение выбранного значения
             a = list(data[selection].unique())  # инициализация списка из уровней выбранной переменной
             combobox_3 = ttk.Combobox(window, values=a, state='readonly')  # создание выпадающего списка
-            combobox_3.place(x=250, y=60)  # расположение списка
+            combobox_3.place(x=20, y=130)  # расположение списка
             combobox_3.bind('<<ComboboxSelected>>', selected_3)  # отслеживание статуса списка
 
+        label_2 = ttk.Label(window, text='Выберите качественную переменную',
+                            font=(config['Graphic_menu']['font'], int(config['Graphic_menu']['font_size'])),
+                            foreground=config['Graphic_menu']['foreground'])
+        label_2.place(x=20, y=70)
         combobox_2 = ttk.Combobox(window, values=qualitative_variables, state='readonly')  # создание выпадающего списка
-        combobox_2.place(x=20, y=60)  # расположение списка
+        combobox_2.place(x=20, y=90)  # расположение списка
         combobox_2.bind('<<ComboboxSelected>>', selected_2)  # отслеживание списка
 
     window = tki.Toplevel()  # создание диалогового окна
     window.title("Категоризированная диаграмма Бокса-Вискера")  # название окна
     window.geometry(config['Graphic_menu']['x'] + 'x' + config['Graphic_menu']['y'])  # размер окна
+    label_1 = ttk.Label(window, text='Выберите количественную переменную',
+                        font=(config['Graphic_menu']['font'], int(config['Graphic_menu']['font_size'])),
+                        foreground=config['Graphic_menu']['foreground'])
+    label_1.place(x=20, y=30)
     combobox_1 = ttk.Combobox(window, values=quantitative_variables, state='readonly')  # создание выпадающего списка
-    combobox_1.place(x=20, y=30)  # расположение списка
+    combobox_1.place(x=20, y=50)  # расположение списка
     combobox_1.bind('<<ComboboxSelected>>', selected_1)  # отслеживание статуса списка
 
 
@@ -919,28 +955,44 @@ def scatter_chart():
                     btn.pack(anchor=tki.S)  # расположение кнопки
                     window.after(200, None)  # продолжение в фоновом режиме
 
+                label_4 = ttk.Label(window, text='Выберите значение качественной переменной',
+                                    font=(config['Graphic_menu']['font'], int(config['Graphic_menu']['font_size'])),
+                                    foreground=config['Graphic_menu']['foreground'])
+                label_4.place(x=20, y=150)
                 selection = combobox_3.get()  # получение выбранного значения
                 a = list(data[selection].unique())  # инициализация списка из уровней выбранной переменной
                 combobox_4 = ttk.Combobox(window, values=a, state='readonly')  # создание выпадающего списка
-                combobox_4.place(x=250, y=90)  # расположение списка
+                combobox_4.place(x=20, y=170)  # расположение списка
                 combobox_4.bind('<<ComboboxSelected>>', selected_4)  # отслеживание статуса списка
 
+            label_3 = ttk.Label(window, text='Выберите качественную переменную',
+                                font=(config['Graphic_menu']['font'], int(config['Graphic_menu']['font_size'])),
+                                foreground=config['Graphic_menu']['foreground'])
+            label_3.place(x=20, y=110)
             combobox_3 = ttk.Combobox(window, values=qualitative_variables, state='readonly')  # создание выпадающего
             # списка
-            combobox_3.place(x=20, y=90)  # расположение списка
+            combobox_3.place(x=20, y=130)  # расположение списка
             combobox_3.bind('<<ComboboxSelected>>', selected_3)  # отслеживание статуса списка
 
+        label_2 = ttk.Label(window, text='Выберите 2-ю количественную переменную',
+                            font=(config['Graphic_menu']['font'], int(config['Graphic_menu']['font_size'])),
+                            foreground=config['Graphic_menu']['foreground'])
+        label_2.place(x=20, y=70)
         drop = combobox_1.get()  # сохранения индекса выбранной переменной
         combobox_2 = ttk.Combobox(window, values=[x for x in quantitative_variables if x != drop], state='readonly')  #
         # создание выпадающего списка
-        combobox_2.place(x=20, y=60)  # расположение списка
+        combobox_2.place(x=20, y=90)  # расположение списка
         combobox_2.bind('<<ComboboxSelected>>', selected_2)  # отслеживание статуса списка
 
     window = tki.Toplevel()  # создание диалогового окна
     window.title("Категоризированная диаграмма рассеивания")  # название окна
     window.geometry(config['Graphic_menu']['x'] + 'x' + config['Graphic_menu']['y'])  # размер окна
+    label_1 = ttk.Label(window, text='Выберите 1-ю количественную переменную',
+                        font=(config['Graphic_menu']['font'], int(config['Graphic_menu']['font_size'])),
+                        foreground=config['Graphic_menu']['foreground'])
+    label_1.place(x=20, y=30)
     combobox_1 = ttk.Combobox(window, values=quantitative_variables, state='readonly')  # создание выпадающего списка
-    combobox_1.place(x=20, y=30)  # расположение списка
+    combobox_1.place(x=20, y=50)  # расположение списка
     combobox_1.bind('<<ComboboxSelected>>', selected_1)  # отслеживание статуса списка
 
 
